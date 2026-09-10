@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 Растишка - Умный сад</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #0c1929 0%, #1a2a3a 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .header h1 {
+            font-size: 36px;
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            opacity: 0.5;
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-top: 3px;
+        }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 10px 18px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .status-dot.offline {
+            background: #f87171;
+            animation: none;
+        }
+        .status-text { font-size: 13px; font-weight: 500; }
+        .ip-address { font-size: 13px; opacity: 0.4; font-family: monospace; }
+
+        .plant-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 20px;
+        }
+        .plant-container svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 20px;
+            background: #1a2a3a;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin: 15px 0 20px;
+        }
+        .info-card {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 14px 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+        .info-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+        .info-card .icon { font-size: 22px; margin-bottom: 4px; }
+        .info-card .label { font-size: 11px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; }
+        .info-card .value { font-size: 22px; font-weight: 700; }
+        .info-card .value.temp { background: linear-gradient(135deg, #f87171, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .info-card .value.humidity { background: linear-gradient(135deg, #60a5fa, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .info-card .value.moisture { background: linear-gradient(135deg, #60a5fa, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+        .controls-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 20px 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .controls-title span { opacity: 0.6; }
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        .control-card {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 18px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            cursor: default;
+        }
+        .control-card.clickable {
+            cursor: pointer;
+        }
+        .control-card.clickable:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-3px);
+        }
+        .control-card.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .control-card .ctrl-icon { font-size: 28px; }
+        .control-card .ctrl-name { font-size: 14px; font-weight: 500; }
+        .control-card .ctrl-state {
+            font-size: 13px;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .ctrl-state.on { background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+        .ctrl-state.off { background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+        .ctrl-state.auto { background: rgba(96, 165, 250, 0.2); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3); }
+        .ctrl-state.disabled-state { background: rgba(255, 255, 255, 0.05); color: #666; border: 1px solid rgba(255, 255, 255, 0.05); }
+
+        .control-card .ctrl-toggle {
+            width: 50px;
+            height: 28px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .control-card .ctrl-toggle.active { background: rgba(74, 222, 128, 0.3); }
+        .control-card .ctrl-toggle .knob {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #888;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: all 0.3s;
+        }
+        .control-card .ctrl-toggle.active .knob { left: 25px; background: #4ade80; }
+        .control-card .ctrl-toggle.auto-toggle { background: rgba(96, 165, 250, 0.2); }
+        .control-card .ctrl-toggle.auto-toggle .knob { background: #60a5fa; left: 25px; }
+
+        .mode-selector {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .mode-btn {
+            padding: 4px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: #888;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .mode-btn:hover { background: rgba(255,255,255,0.1); }
+        .mode-btn.active {
+            background: rgba(74, 222, 128, 0.2);
+            border-color: rgba(74, 222, 128, 0.3);
+            color: #4ade80;
+        }
+        .mode-btn.active-always {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+        }
+
+        .refresh-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #fff;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); }
+        .btn-primary { background: linear-gradient(135deg, #4ade80, #22d3ee); }
+        .btn-secondary { background: rgba(255, 255, 255, 0.1); }
+        .btn-warning { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 14px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.4s ease;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 1000;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .moisture-threshold {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .moisture-threshold label {
+            font-size: 12px;
+            opacity: 0.6;
+        }
+        .moisture-threshold input[type="range"] {
+            flex: 1;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            outline: none;
+        }
+        .moisture-threshold input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #4ade80;
+            cursor: pointer;
+        }
+        .moisture-threshold .threshold-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4ade80;
+            min-width: 35px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .header h1 { font-size: 26px; }
+            .controls-grid { grid-template-columns: 1fr; }
+            .info-grid { grid-template-columns: repeat(2, 1fr); }
+            .status-bar { flex-direction: column; align-items: flex-start; }
+            .plant-container { max-width: 100%; }
+            .mode-selector { flex-wrap: wrap; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Растишка</h1>
+            <p>Умный сад</p>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span class="status-text" id="statusText">Подключено</span>
+            </div>
+            <span class="ip-address" id="ipAddress">IP: ---</span>
+        </div>
+
+        <!-- Растение -->
+        <div class="plant-container">
+            <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="leafDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#1a5a3a"/>
+                        <stop offset="100%" stop-color="#0f3d25"/>
+                    </linearGradient>
+                    <linearGradient id="leafMid" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#2d8a4e"/>
+                        <stop offset="100%" stop-color="#1a6a3a"/>
+                    </linearGradient>
+                    <linearGradient id="leafLight" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#4ade80"/>
+                        <stop offset="100%" stop-color="#22c55e"/>
+                    </linearGradient>
+                    <linearGradient id="leafBright" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#6ee7a0"/>
+                        <stop offset="100%" stop-color="#4ade80"/>
+                    </linearGradient>
+                    <linearGradient id="potGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#e07b4a"/>
+                        <stop offset="50%" stop-color="#c96a3a"/>
+                        <stop offset="100%" stop-color="#b05a2a"/>
+                    </linearGradient>
+                    <linearGradient id="potRim" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#f08b5a"/>
+                        <stop offset="100%" stop-color="#d07a4a"/>
+                    </linearGradient>
+                    <radialGradient id="soilGrad" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#5d4037"/>
+                        <stop offset="100%" stop-color="#3e2723"/>
+                    </radialGradient>
+                    <filter id="shadow">
+                        <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.3"/>
+                    </filter>
+                </defs>
+
+                <rect x="0" y="0" width="500" height="500" fill="#1a2a3a" rx="20"/>
+
+                <text x="30" y="40" font-size="11" fill="rgba(255,255,255,0.3)" font-weight="600">🌡️ ТЕМПЕРАТУРА</text>
+                <text id="svgTemp" x="30" y="72" font-size="30" fill="#f87171" font-weight="700">22</text>
+                <text x="85" y="72" font-size="16" fill="rgba(255,255,255,0.25)">°C</text>
+
+                <text x="370" y="40" font-size="11" fill="rgba(255,255,255,0.3)" font-weight="600">💧 ВЛАЖНОСТЬ</text>
+                <text id="svgHumidity" x="370" y="72" font-size="30" fill="#60a5fa" font-weight="700">65</text>
+                <text x="435" y="72" font-size="16" fill="rgba(255,255,255,0.25)">%</text>
+
+                <path d="M160 330 L190 430 L310 430 L340 330 Z" fill="url(#potGrad)" stroke="#8a4a2a" stroke-width="1.5" filter="url(#shadow)"/>
+                <rect x="145" y="318" width="210" height="16" rx="6" fill="url(#potRim)" stroke="#8a4a2a" stroke-width="1"/>
+                <path d="M180 340 L195 420 Q200 425 200 420 L190 340 Z" fill="rgba(255,255,255,0.08)"/>
+
+                <ellipse cx="250" cy="330" rx="85" ry="14" fill="url(#soilGrad)"/>
+                <ellipse cx="220" cy="328" rx="15" ry="5" fill="#4e342e" opacity="0.6"/>
+                <ellipse cx="275" cy="332" rx="10" ry="4" fill="#4e342e" opacity="0.5"/>
+
+                <path d="M250 328 Q248 290 245 260 Q240 230 238 200" stroke="#1a5a3a" stroke-width="5" fill="none" stroke-linecap="round"/>
+                <path d="M248 300 Q225 270 210 235 Q200 215 195 190" stroke="#1a5a3a" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <path d="M252 290 Q275 265 295 235 Q310 215 315 195" stroke="#1a5a3a" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+                <ellipse cx="195" cy="175" rx="50" ry="25" fill="url(#leafDark)" transform="rotate(-35, 195, 175)" filter="url(#shadow)"/>
+                <ellipse cx="305" cy="180" rx="50" ry="25" fill="url(#leafMid)" transform="rotate(30, 305, 180)" filter="url(#shadow)"/>
+                <ellipse cx="250" cy="160" rx="55" ry="22" fill="url(#leafLight)" transform="rotate(-5, 250, 160)" filter="url(#shadow)"/>
+                <ellipse cx="180" cy="225" rx="45" ry="20" fill="url(#leafBright)" transform="rotate(-25, 180, 225)" filter="url(#shadow)"/>
+                <ellipse cx="320" cy="230" rx="45" ry="20" fill="url(#leafMid)" transform="rotate(20, 320, 230)" filter="url(#shadow)"/>
+                <ellipse cx="185" cy="275" rx="35" ry="16" fill="url(#leafDark)" transform="rotate(-40, 185, 275)" filter="url(#shadow)"/>
+                <ellipse cx="315" cy="270" rx="35" ry="16" fill="url(#leafLight)" transform="rotate(35, 315, 270)" filter="url(#shadow)"/>
+
+                <text x="250" y="362" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">ВЛАЖНОСТЬ ПОЧВЫ</text>
+                <rect x="190" y="370" width="120" height="8" rx="4" fill="rgba(255,255,255,0.06)"/>
+                <rect id="svgMoistureBar" x="190" y="370" width="72" height="8" rx="4" fill="#60a5fa" opacity="0.7"/>
+                <text id="svgMoisture" x="250" y="397" font-size="18" fill="#60a5fa" font-weight="700" text-anchor="middle">68</text>
+                <text x="300" y="397" font-size="12" fill="rgba(255,255,255,0.2)">%</text>
+
+                <!-- ONLINE и иконка УДАЛЕНЫ -->
+            </svg>
+        </div>
+
+        <!-- Информационные карточки -->
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="icon">🌡️</div>
+                <div class="label">Температура</div>
+                <div class="value temp" id="cardTemp">--°C</div>
+            </div>
+            <div class="info-card">
+                <div class="icon">💧</div>
+                <div class="label">Влажность воздуха</div>
+                <div class="value humidity" id="cardHumidity">--%</div>
+            </div>
+            <div class="info-card">
+                <div class="icon">💦</div>
+                <div class="label">Влажность почвы</div>
+                <div class="value moisture" id="cardMoisture">--%</div>
+            </div>
+        </div>
+
+        <!-- Управление -->
+        <div class="controls-title">🎮 <span>Управление</span></div>
+
+        <div class="moisture-threshold">
+            <label>💧 Порог автополива:</label>
+            <input type="range" id="thresholdSlider" min="20" max="70" value="40" oninput="updateThreshold(this.value)">
+            <span class="threshold-value" id="thresholdDisplay">40</span>
+            <span style="font-size:12px; opacity:0.4;">%</span>
+        </div>
+
+        <div class="controls-grid">
+            <!-- Фитолампа -->
+            <div class="control-card">
+                <div class="ctrl-icon">💡</div>
+                <div class="ctrl-name">Фитолампа</div>
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="manual" onclick="setLampMode('manual')">Вручную</button>
+                    <button class="mode-btn" data-mode="always" onclick="setLampMode('always')">Всегда вкл</button>
+                </div>
+                <div class="ctrl-state off" id="relayState0">ВЫКЛ</div>
+                <div class="ctrl-toggle" id="relayToggle0" onclick="toggleRelay(0)">
+                    <div class="knob"></div>
+                </div>
+            </div>
+
+            <!-- Полив -->
+            <div class="control-card clickable" id="waterCard" onclick="toggleRelay(1)">
+                <div class="ctrl-icon">💦</div>
+                <div class="ctrl-name">Полив</div>
+                <div class="ctrl-state off" id="relayState1">ВЫКЛ</div>
+                <div class="ctrl-toggle" id="relayToggle1">
+                    <div class="knob"></div>
+                </div>
+            </div>
+
+            <!-- Автополив -->
+            <div class="control-card clickable" id="autoWaterCard" onclick="toggleAutoWater()">
+                <div class="ctrl-icon">🤖</div>
+                <div class="ctrl-name">Автополив</div>
+                <div class="ctrl-state off" id="autoWaterState">ВЫКЛ</div>
+                <div class="ctrl-toggle" id="autoWaterToggle">
+                    <div class="knob"></div>
+                </div>
+                <div style="font-size:10px; opacity:0.3; margin-top:2px;" id="autoWaterStatus">Ожидание</div>
+            </div>
+        </div>
+
+        <div class="refresh-bar">
+            <button class="btn btn-primary" onclick="refreshData()">🔄 Обновить</button>
+            <button class="btn btn-secondary" onclick="allOff()">❌ Всё выключить</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============================================
+        // Состояние
+        // ============================================
+        let relayStates = [0, 0];
+        let autoWater = false;
+        let lampMode = 'manual';
+        let moistureThreshold = 40;
+        let lastMoisture = 68;
+        let updateInterval = null;
+
+        // ============================================
+        // Инициализация
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshData();
+            updateInterval = setInterval(refreshData, 5000);
+            updateThreshold(moistureThreshold);
+        });
+
+        // ============================================
+        // Обновление данных
+        // ============================================
+        async function refreshData() {
+            try {
+                const response = await fetch('/api/status');
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                const data = await response.json();
+
+                const temp = data.temperature || 22;
+                const humidity = data.humidity || 65;
+                const moisture = data.moisture || 68;
+                lastMoisture = moisture;
+
+                document.getElementById('svgTemp').textContent = temp;
+                document.getElementById('svgHumidity').textContent = humidity;
+                document.getElementById('svgMoisture').textContent = moisture;
+                
+                const barWidth = Math.min(100, Math.max(0, moisture)) * 1.15;
+                document.getElementById('svgMoistureBar').setAttribute('width', Math.min(120, barWidth + 20));
+
+                document.getElementById('cardTemp').textContent = temp + '°C';
+                document.getElementById('cardHumidity').textContent = humidity + '%';
+                document.getElementById('cardMoisture').textContent = moisture + '%';
+
+                if (data.relays) {
+                    relayStates[0] = data.relays[0] || 0;
+                    relayStates[1] = data.relays[1] || 0;
+                    updateRelayUI(0);
+                    updateRelayUI(1);
+                }
+
+                if (data.ip) {
+                    document.getElementById('ipAddress').textContent = 'IP: ' + data.ip;
+                }
+
+                checkAutoWater();
+                setStatus(true);
+            } catch (error) {
+                console.error('Ошибка:', error);
+                setStatus(false);
+            }
+        }
+
+        // ============================================
+        // Автополив
+        // ============================================
+        function checkAutoWater() {
+            const statusEl = document.getElementById('autoWaterStatus');
+            
+            if (!autoWater) {
+                statusEl.textContent = '⏸️ Ожидание';
+                return;
+            }
+
+            const shouldWater = lastMoisture < moistureThreshold;
+            
+            if (shouldWater) {
+                if (relayStates[1] !== 1) {
+                    setRelay(1, 1);
+                }
+                statusEl.textContent = '💦 Полив... (' + lastMoisture + '% < ' + moistureThreshold + '%)';
+            } else {
+                if (relayStates[1] !== 0) {
+                    setRelay(1, 0);
+                }
+                statusEl.textContent = '✅ Влажность в норме (' + lastMoisture + '% ≥ ' + moistureThreshold + '%)';
+            }
+        }
+
+        async function setRelay(index, state) {
+            try {
+                const response = await fetch('/api/relay', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ relay: index, state: state })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    relayStates[index] = state;
+                    updateRelayUI(index);
+                }
+            } catch (error) {
+                console.error('Ошибка установки реле:', error);
+            }
+        }
+
+        // ============================================
+        // Переключение автополива
+        // ============================================
+        async function toggleAutoWater() {
+            autoWater = !autoWater;
+            
+            const stateEl = document.getElementById('autoWaterState');
+            const toggleEl = document.getElementById('autoWaterToggle');
+            
+            if (autoWater) {
+                stateEl.textContent = 'ВКЛ';
+                stateEl.className = 'ctrl-state auto';
+                toggleEl.className = 'ctrl-toggle auto-toggle';
+                document.getElementById('autoWaterStatus').textContent = '🔄 Проверка...';
+                if (relayStates[1] === 1) {
+                    await setRelay(1, 0);
+                }
+                document.getElementById('waterCard').classList.add('disabled');
+                setTimeout(checkAutoWater, 500);
+            } else {
+                stateEl.textContent = 'ВЫКЛ';
+                stateEl.className = 'ctrl-state off';
+                toggleEl.className = 'ctrl-toggle';
+                document.getElementById('autoWaterStatus').textContent = '⏸️ Ожидание';
+                document.getElementById('waterCard').classList.remove('disabled');
+                if (relayStates[1] === 1) {
+                    await setRelay(1, 0);
+                }
+            }
+            
+            showToast(autoWater ? '🤖 Автополив включён' : '🤖 Автополив выключен');
+        }
+
+        // ============================================
+        // Управление реле
+        // ============================================
+        async function toggleRelay(index) {
+            if (index === 1 && autoWater) {
+                showToast('⚠️ Автополив активен! Ручное управление недоступно');
+                return;
+            }
+
+            if (index === 0 && lampMode === 'always') {
+                showToast('💡 Фитолампа в режиме "Всегда вкл"');
+                return;
+            }
+
+            const newState = relayStates[index] === 0 ? 1 : 0;
+            
+            try {
+                const response = await fetch('/api/relay', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ relay: index, state: newState })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    relayStates[index] = newState;
+                    updateRelayUI(index);
+                    const names = ['💡 Фитолампа', '💦 Полив'];
+                    showToast(names[index] + (newState ? ' включена' : ' выключена'));
+                }
+            } catch (error) {
+                showToast('⚠️ Ошибка управления');
+            }
+        }
+
+        // ============================================
+        // Обновление UI реле
+        // ============================================
+        function updateRelayUI(index) {
+            const state = relayStates[index];
+            const stateEl = document.getElementById('relayState' + index);
+            const toggleEl = document.getElementById('relayToggle' + index);
+            
+            if (index === 0 && lampMode === 'always') {
+                stateEl.textContent = 'ВКЛ (авто)';
+                stateEl.className = 'ctrl-state auto';
+                toggleEl.className = 'ctrl-toggle auto-toggle';
+                return;
+            }
+            
+            stateEl.textContent = state ? 'ВКЛ' : 'ВЫКЛ';
+            stateEl.className = 'ctrl-state ' + (state ? 'on' : 'off');
+            toggleEl.className = 'ctrl-toggle' + (state ? ' active' : '');
+        }
+
+        // ============================================
+        // Режимы фитолампы
+        // ============================================
+        function setLampMode(mode) {
+            lampMode = mode;
+            
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active', 'active-always');
+                if (btn.dataset.mode === mode) {
+                    btn.classList.add(mode === 'always' ? 'active-always' : 'active');
+                }
+            });
+            
+            if (mode === 'always') {
+                if (relayStates[0] !== 1) {
+                    setRelay(0, 1);
+                }
+                showToast('💡 Фитолампа: режим "Всегда вкл"');
+            } else {
+                updateRelayUI(0);
+                showToast('💡 Фитолампа: режим "Вручную"');
+            }
+        }
+
+        // ============================================
+        // Порог влажности
+        // ============================================
+        function updateThreshold(value) {
+            moistureThreshold = parseInt(value);
+            document.getElementById('thresholdDisplay').textContent = moistureThreshold;
+            if (autoWater) {
+                checkAutoWater();
+            }
+        }
+
+        // ============================================
+        // Вспомогательные функции
+        // ============================================
+        async function allOff() {
+            try {
+                const response = await fetch('/api/relay/all', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ state: 0 })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    if (autoWater) {
+                        if (lampMode !== 'always') {
+                            relayStates[0] = 0;
+                            updateRelayUI(0);
+                        }
+                        showToast('❌ Фитолампа выключена (автополив активен)');
+                    } else {
+                        relayStates = [0, 0];
+                        updateRelayUI(0);
+                        updateRelayUI(1);
+                        showToast('❌ Всё выключено');
+                    }
+                }
+            } catch (error) {
+                showToast('⚠️ Ошибка');
+            }
+        }
+
+        function setStatus(online) {
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+            
+            if (online) {
+                dot.className = 'status-dot';
+                text.textContent = 'Подключено';
+            } else {
+                dot.className = 'status-dot offline';
+                text.textContent = 'Офлайн';
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
