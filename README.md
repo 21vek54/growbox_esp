@@ -1,11 +1,13 @@
-﻿# 🌱 growbox_esp — Растишка
+# 🌱 growbox_esp — Растишка
 
 Прошивка умного гроубокса на **ESP32-S3** (PlatformIO + ESP-IDF): датчики, реле и веб-интерфейс «Растишка».
+
+![Превью растения](docs/plant-preview.png)
 
 ## Возможности
 
 - Температура и влажность воздуха (RS485)
-- Влажность почвы (ADC)
+- Влажность почвы (два датчика ADC)
 - Управление реле через TCA9554 (фитолампа, полив)
 - Веб-UI из SPIFFS (`data/index.html`): статусы, автополив, режимы лампы
 - HTTP API для статуса и реле
@@ -42,6 +44,7 @@ pio device monitor
 src/           — main, HTTP, Wi‑Fi
 lib/           — ADC, I2C, RS485, TCA9554
 data/          — веб-интерфейс (index.html)
+docs/          — превью UI
 ```
 
 ## HTTP API
@@ -52,11 +55,6 @@ data/          — веб-интерфейс (index.html)
 | `GET` | `/api/status` | JSON: температура, влажность, почва, реле, IP |
 | `POST` | `/api/relay` | `{"relay":0\|1,"state":0\|1}` |
 | `POST` | `/api/relay/all` | `{"state":0\|1}` |
-
-## Ветки
-
-- `main` — базовая прошивка и UI
-- [`update-plant-visual`](https://github.com/21vek54/growbox_esp/tree/update-plant-visual) — обновлённый SVG растения (куст в салатовом горшке)
 
 ## Лицензия
 

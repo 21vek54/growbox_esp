@@ -6,7 +6,6 @@
     <title>🌱 Растишка - Умный сад</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(180deg, #0c1929 0%, #1a2a3a 100%);
@@ -17,7 +16,6 @@
             justify-content: center;
             align-items: flex-start;
         }
-
         .container {
             max-width: 900px;
             width: 100%;
@@ -28,14 +26,12 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
-
         .header {
             text-align: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-
         .header h1 {
             font-size: 36px;
             background: linear-gradient(135deg, #4ade80, #22d3ee);
@@ -43,14 +39,12 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .header p {
             opacity: 0.5;
             font-size: 14px;
             letter-spacing: 2px;
             margin-top: 3px;
         }
-
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -63,13 +57,11 @@
             flex-wrap: wrap;
             gap: 8px;
         }
-
         .status-indicator {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-
         .status-dot {
             width: 10px;
             height: 10px;
@@ -77,17 +69,14 @@
             background: #4ade80;
             animation: pulse 2s infinite;
         }
-
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.4; }
         }
-
         .status-dot.offline {
             background: #f87171;
             animation: none;
         }
-
         .status-text { font-size: 13px; font-weight: 500; }
         .ip-address { font-size: 13px; opacity: 0.4; font-family: monospace; }
 
@@ -96,7 +85,6 @@
             max-width: 500px;
             margin: 0 auto 20px;
         }
-
         .plant-container svg {
             width: 100%;
             height: auto;
@@ -112,7 +100,6 @@
             gap: 12px;
             margin: 15px 0 20px;
         }
-
         .info-card {
             background: rgba(255, 255, 255, 0.04);
             border-radius: 14px;
@@ -121,12 +108,10 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.3s;
         }
-
         .info-card:hover {
             background: rgba(255, 255, 255, 0.08);
             transform: translateY(-2px);
         }
-
         .info-card .icon { font-size: 22px; margin-bottom: 4px; }
         .info-card .label { font-size: 11px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; }
         .info-card .value { font-size: 22px; font-weight: 700; }
@@ -144,13 +129,11 @@
             gap: 10px;
         }
         .controls-title span { opacity: 0.6; }
-
         .controls-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
         }
-
         .control-card {
             background: rgba(255, 255, 255, 0.04);
             border-radius: 16px;
@@ -163,22 +146,19 @@
             transition: all 0.3s;
             cursor: default;
         }
-
-        .control-card.clickable { cursor: pointer; }
-
+        .control-card.clickable {
+            cursor: pointer;
+        }
         .control-card.clickable:hover {
             background: rgba(255, 255, 255, 0.08);
             transform: translateY(-3px);
         }
-
         .control-card.disabled {
             opacity: 0.4;
             cursor: not-allowed;
         }
-
         .control-card .ctrl-icon { font-size: 28px; }
         .control-card .ctrl-name { font-size: 14px; font-weight: 500; }
-
         .control-card .ctrl-state {
             font-size: 13px;
             padding: 4px 16px;
@@ -186,10 +166,10 @@
             font-weight: 600;
             transition: all 0.3s;
         }
-
         .ctrl-state.on { background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
         .ctrl-state.off { background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
         .ctrl-state.auto { background: rgba(96, 165, 250, 0.2); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3); }
+        .ctrl-state.disabled-state { background: rgba(255, 255, 255, 0.05); color: #666; border: 1px solid rgba(255, 255, 255, 0.05); }
 
         .control-card .ctrl-toggle {
             width: 50px;
@@ -200,9 +180,7 @@
             transition: all 0.3s;
             cursor: pointer;
         }
-
         .control-card .ctrl-toggle.active { background: rgba(74, 222, 128, 0.3); }
-
         .control-card .ctrl-toggle .knob {
             width: 22px;
             height: 22px;
@@ -213,7 +191,6 @@
             left: 3px;
             transition: all 0.3s;
         }
-
         .control-card .ctrl-toggle.active .knob { left: 25px; background: #4ade80; }
         .control-card .ctrl-toggle.auto-toggle { background: rgba(96, 165, 250, 0.2); }
         .control-card .ctrl-toggle.auto-toggle .knob { background: #60a5fa; left: 25px; }
@@ -223,7 +200,6 @@
             gap: 6px;
             margin-top: 4px;
         }
-
         .mode-btn {
             padding: 4px 12px;
             border-radius: 12px;
@@ -235,7 +211,6 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-
         .mode-btn:hover { background: rgba(255,255,255,0.1); }
         .mode-btn.active {
             background: rgba(74, 222, 128, 0.2);
@@ -255,7 +230,6 @@
             margin-top: 20px;
             flex-wrap: wrap;
         }
-
         .btn {
             padding: 10px 28px;
             border: none;
@@ -266,10 +240,10 @@
             transition: all 0.3s;
             color: #fff;
         }
-
         .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); }
         .btn-primary { background: linear-gradient(135deg, #4ade80, #22d3ee); }
         .btn-secondary { background: rgba(255, 255, 255, 0.1); }
+        .btn-warning { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
 
         .toast {
             position: fixed;
@@ -288,7 +262,6 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             z-index: 1000;
         }
-
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         .moisture-threshold {
@@ -301,12 +274,10 @@
             border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.05);
         }
-
         .moisture-threshold label {
             font-size: 12px;
             opacity: 0.6;
         }
-
         .moisture-threshold input[type="range"] {
             flex: 1;
             height: 4px;
@@ -315,7 +286,6 @@
             border-radius: 2px;
             outline: none;
         }
-
         .moisture-threshold input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 16px;
@@ -324,7 +294,6 @@
             background: #4ade80;
             cursor: pointer;
         }
-
         .moisture-threshold .threshold-value {
             font-size: 14px;
             font-weight: 600;
@@ -361,92 +330,224 @@
 
         <!-- Растение -->
         <div class="plant-container">
-            <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="leafDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#1a5a3a"/>
-                        <stop offset="100%" stop-color="#0f3d25"/>
-                    </linearGradient>
-                    <linearGradient id="leafMid" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#2d8a4e"/>
-                        <stop offset="100%" stop-color="#1a6a3a"/>
-                    </linearGradient>
-                    <linearGradient id="leafLight" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#4ade80"/>
-                        <stop offset="100%" stop-color="#22c55e"/>
-                    </linearGradient>
-                    <linearGradient id="leafBright" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#6ee7a0"/>
-                        <stop offset="100%" stop-color="#4ade80"/>
-                    </linearGradient>
-                    <linearGradient id="potGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#e07b4a"/>
-                        <stop offset="50%" stop-color="#c96a3a"/>
-                        <stop offset="100%" stop-color="#b05a2a"/>
-                    </linearGradient>
-                    <linearGradient id="potRim" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#f08b5a"/>
-                        <stop offset="100%" stop-color="#d07a4a"/>
-                    </linearGradient>
-                    <radialGradient id="soilGrad" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stop-color="#5d4037"/>
-                        <stop offset="100%" stop-color="#3e2723"/>
-                    </radialGradient>
-                    <filter id="shadow">
-                        <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.3"/>
-                    </filter>
-                </defs>
-
-                <rect x="0" y="0" width="500" height="500" fill="#1a2a3a" rx="20"/>
-
-                <!-- Температура -->
-                <text x="30" y="40" font-size="11" fill="rgba(255,255,255,0.3)" font-weight="600">🌡️ ТЕМПЕРАТУРА</text>
-                <text id="svgTemp" x="30" y="72" font-size="30" fill="#f87171" font-weight="700">22</text>
-                <text x="85" y="72" font-size="16" fill="rgba(255,255,255,0.25)">°C</text>
-
-                <!-- Влажность воздуха -->
-                <text x="370" y="40" font-size="11" fill="rgba(255,255,255,0.3)" font-weight="600">💧 ВЛАЖНОСТЬ</text>
-                <text id="svgHumidity" x="370" y="72" font-size="30" fill="#60a5fa" font-weight="700">65</text>
-                <text x="435" y="72" font-size="16" fill="rgba(255,255,255,0.25)">%</text>
-
-                <!-- Горшок -->
-                <path d="M160 330 L190 430 L310 430 L340 330 Z" fill="url(#potGrad)" stroke="#8a4a2a" stroke-width="1.5" filter="url(#shadow)"/>
-                <rect x="145" y="318" width="210" height="16" rx="6" fill="url(#potRim)" stroke="#8a4a2a" stroke-width="1"/>
-                <path d="M180 340 L195 420 Q200 425 200 420 L190 340 Z" fill="rgba(255,255,255,0.08)"/>
-
-                <!-- Почва -->
-                <ellipse cx="250" cy="330" rx="85" ry="14" fill="url(#soilGrad)"/>
-                <ellipse cx="220" cy="328" rx="15" ry="5" fill="#4e342e" opacity="0.6"/>
-                <ellipse cx="275" cy="332" rx="10" ry="4" fill="#4e342e" opacity="0.5"/>
-
-                <!-- Стебли -->
-                <path d="M250 328 Q248 290 245 260 Q240 230 238 200" stroke="#1a5a3a" stroke-width="5" fill="none" stroke-linecap="round"/>
-                <path d="M248 300 Q225 270 210 235 Q200 215 195 190" stroke="#1a5a3a" stroke-width="4" fill="none" stroke-linecap="round"/>
-                <path d="M252 290 Q275 265 295 235 Q310 215 315 195" stroke="#1a5a3a" stroke-width="4" fill="none" stroke-linecap="round"/>
-
-                <!-- Листья -->
-                <ellipse cx="195" cy="175" rx="50" ry="25" fill="url(#leafDark)" transform="rotate(-35, 195, 175)" filter="url(#shadow)"/>
-                <ellipse cx="305" cy="180" rx="50" ry="25" fill="url(#leafMid)" transform="rotate(30, 305, 180)" filter="url(#shadow)"/>
-                <ellipse cx="250" cy="160" rx="55" ry="22" fill="url(#leafLight)" transform="rotate(-5, 250, 160)" filter="url(#shadow)"/>
-                <ellipse cx="180" cy="225" rx="45" ry="20" fill="url(#leafBright)" transform="rotate(-25, 180, 225)" filter="url(#shadow)"/>
-                <ellipse cx="320" cy="230" rx="45" ry="20" fill="url(#leafMid)" transform="rotate(20, 320, 230)" filter="url(#shadow)"/>
-                <ellipse cx="185" cy="275" rx="35" ry="16" fill="url(#leafDark)" transform="rotate(-40, 185, 275)" filter="url(#shadow)"/>
-                <ellipse cx="315" cy="270" rx="35" ry="16" fill="url(#leafLight)" transform="rotate(35, 315, 270)" filter="url(#shadow)"/>
-
-                <!-- Влажность почвы 1 -->
-                <text x="250" y="362" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">ВЛАЖНОСТЬ ПОЧВЫ 1</text>
-                <rect x="190" y="370" width="120" height="8" rx="4" fill="rgba(255,255,255,0.06)"/>
-                <rect id="svgMoistureBar" x="190" y="370" width="72" height="8" rx="4" fill="#60a5fa" opacity="0.7"/>
-                <text id="svgMoisture" x="250" y="397" font-size="18" fill="#60a5fa" font-weight="700" text-anchor="middle">68</text>
-                <text x="300" y="397" font-size="12" fill="rgba(255,255,255,0.2)">%</text>
-
-                <!-- Влажность почвы 2 -->
-                <text x="250" y="420" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">ВЛАЖНОСТЬ ПОЧВЫ 2</text>
-                <rect x="190" y="428" width="120" height="8" rx="4" fill="rgba(255,255,255,0.06)"/>
-                <rect id="svgMoisture2Bar" x="190" y="428" width="72" height="8" rx="4" fill="#4ade80" opacity="0.7"/>
-                <text id="svgMoisture2" x="250" y="455" font-size="18" fill="#4ade80" font-weight="700" text-anchor="middle">68</text>
-                <text x="300" y="455" font-size="12" fill="rgba(255,255,255,0.2)">%</text>
-            </svg>
+            <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Зелёный куст в салатовом горшке">
+<defs>
+<linearGradient id="potGrad" x2="1" y2=".3"><stop stop-color="#d4ef34"/><stop offset=".55" stop-color="#a8ce08"/><stop offset="1" stop-color="#789b05"/></linearGradient>
+<linearGradient id="leafDark"><stop stop-color="#123e2a"/><stop offset=".5" stop-color="#216340"/><stop offset=".51" stop-color="#164a30"/><stop offset="1" stop-color="#0c3024"/></linearGradient>
+<linearGradient id="leafMid"><stop stop-color="#225b34"/><stop offset=".48" stop-color="#418544"/><stop offset=".51" stop-color="#245e33"/><stop offset="1" stop-color="#16442c"/></linearGradient>
+<linearGradient id="leafLight"><stop stop-color="#478b28"/><stop offset=".48" stop-color="#8cc942"/><stop offset=".51" stop-color="#4b942a"/><stop offset="1" stop-color="#286623"/></linearGradient>
+</defs><rect width="500" height="500" rx="20" fill="#1a2a3a"/>
+<g font-family="Segoe UI,Arial,sans-serif"><text x="30" y="40" font-size="11" fill="#9aa8b6">ТЕМПЕРАТУРА</text><text id="svgTemp" x="30" y="72" font-size="30" fill="#f87171" font-weight="700">22</text><text x="85" y="72" font-size="16" fill="#9aa8b6">°C</text>
+<text x="370" y="40" font-size="11" fill="#9aa8b6">ВЛАЖНОСТЬ</text><text id="svgHumidity" x="370" y="72" font-size="30" fill="#60a5fa" font-weight="700">65</text><text x="435" y="72" font-size="16" fill="#9aa8b6">%</text></g>
+<ellipse cx="251" cy="464" rx="95" ry="9" fill="#0d1b28" opacity=".55"/>
+<path d="M177 343 L323 343 L309 459 L191 459Z" fill="url(#potGrad)"/>
+<path d="M310 354 L323 343 L309 459 L299 459Z" fill="#739303" opacity=".45"/>
+<path d="M182 328 L318 328 L315 351 L185 351Z" fill="#111e1a"/>
+<path d="M178 327 Q250 317 322 327 L320 334 Q250 326 180 334Z" fill="#b4d728"/>
+<ellipse cx="250" cy="329" rx="62" ry="6" fill="#253328"/>
+<path d="M244 329 Q237.0 237 224 223" fill="none" stroke="#3b682d" stroke-width="2"/>
+<path d="M248 329 Q254.0 222 258 208" fill="none" stroke="#507c32" stroke-width="3"/>
+<path d="M252 329 Q248.5 242 247 228" fill="none" stroke="#2b5733" stroke-width="2"/>
+<path d="M256 329 Q264.0 265 278 251" fill="none" stroke="#3b682d" stroke-width="3"/>
+<path d="M260 329 Q275.0 278 300 264" fill="none" stroke="#507c32" stroke-width="2"/>
+<path d="M244 329 Q230.5 275 211 261" fill="none" stroke="#2b5733" stroke-width="3"/>
+<path d="M248 329 Q222.5 300 195 286" fill="none" stroke="#3b682d" stroke-width="2"/>
+<path d="M252 329 Q283.0 301 316 287" fill="none" stroke="#507c32" stroke-width="3"/>
+<path d="M256 329 Q240.0 263 230 249" fill="none" stroke="#2b5733" stroke-width="2"/>
+<path d="M260 329 Q259.0 283 268 269" fill="none" stroke="#3b682d" stroke-width="3"/>
+<path d="M244 329 Q228.0 314 206 300" fill="none" stroke="#507c32" stroke-width="2"/>
+<path d="M248 329 Q268.5 306 287 292" fill="none" stroke="#2b5733" stroke-width="3"/>
+<path d="M252 329 Q244.0 302 238 288" fill="none" stroke="#3b682d" stroke-width="2"/>
+<path d="M256 329 Q277.0 320 304 306" fill="none" stroke="#507c32" stroke-width="3"/>
+<path d="M260 329 Q216.0 315 182 301" fill="none" stroke="#2b5733" stroke-width="2"/>
+<path d="M244 329 Q234.0 317 218 303" fill="none" stroke="#3b682d" stroke-width="3"/>
+<path d="M248 329 Q266.0 325 282 311" fill="none" stroke="#507c32" stroke-width="2"/>
+<path d="M252 329 Q251.5 319 253 305" fill="none" stroke="#2b5733" stroke-width="3"/>
+<g transform="translate(224 223) rotate(-32)"><path d="M0 0 C-22 -23.32 -22 -76.32 -7 -106 C7.699999999999999 -81.62 23.1 -27.560000000000002 0 0Z" fill="url(#leafLight)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip0"><path d="M0 0 C-22 -23.32 -22 -76.32 -7 -106 C7.699999999999999 -81.62 23.1 -27.560000000000002 0 0Z"/></clipPath><g clip-path="url(#clip0)">
+<path d="M0 0 Q4 -53.0 -7 -106" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -23.3 Q-5.6 -27.3 -9.4 -36.3 M2 -23.3 Q7.5 -26.3 9.4 -34.3" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -36.0 Q-7.8 -40.0 -12.9 -49.0 M2 -36.0 Q10.3 -39.0 12.9 -47.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -48.8 Q-8.8 -52.8 -14.6 -61.8 M2 -48.8 Q11.7 -51.8 14.6 -59.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -61.5 Q-8.6 -65.5 -14.3 -74.5 M2 -61.5 Q11.4 -64.5 14.3 -72.5" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -74.2 Q-7.2 -78.2 -11.9 -87.2 M2 -74.2 Q9.5 -77.2 11.9 -85.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -84.8 Q-5.2 -88.8 -8.7 -97.8 M2 -84.8 Q6.9 -87.8 8.7 -95.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(258 208) rotate(9)"><path d="M0 0 C-20 -26.84 -20 -87.84 7 -122 C7.0 -93.94 21.0 -31.720000000000002 0 0Z" fill="url(#leafLight)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip1"><path d="M0 0 C-20 -26.84 -20 -87.84 7 -122 C7.0 -93.94 21.0 -31.720000000000002 0 0Z"/></clipPath><g clip-path="url(#clip1)">
+<path d="M0 0 Q4 -61.0 7 -122" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -26.8 Q-5.1 -30.8 -8.5 -39.8 M2 -26.8 Q6.8 -29.8 8.5 -37.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -41.5 Q-7.0 -45.5 -11.7 -54.5 M2 -41.5 Q9.4 -44.5 11.7 -52.5" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -56.1 Q-8.0 -60.1 -13.3 -69.1 M2 -56.1 Q10.6 -59.1 13.3 -67.1" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -70.8 Q-7.8 -74.8 -13.0 -83.8 M2 -70.8 Q10.4 -73.8 13.0 -81.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -85.4 Q-6.5 -89.4 -10.8 -98.4 M2 -85.4 Q8.7 -88.4 10.8 -96.4" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -97.6 Q-4.7 -101.6 -7.9 -110.6 M2 -97.6 Q6.3 -100.6 7.9 -108.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(247 228) rotate(-8)"><path d="M0 0 C-23 -23.76 -23 -77.75999999999999 -7 -108 C8.049999999999999 -83.16 24.150000000000002 -28.080000000000002 0 0Z" fill="url(#leafMid)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip2"><path d="M0 0 C-23 -23.76 -23 -77.75999999999999 -7 -108 C8.049999999999999 -83.16 24.150000000000002 -28.080000000000002 0 0Z"/></clipPath><g clip-path="url(#clip2)">
+<path d="M0 0 Q4 -54.0 -7 -108" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -23.8 Q-5.9 -27.8 -9.8 -36.8 M2 -23.8 Q7.9 -26.8 9.8 -34.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -36.7 Q-8.1 -40.7 -13.5 -49.7 M2 -36.7 Q10.8 -39.7 13.5 -47.7" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -49.7 Q-9.2 -53.7 -15.3 -62.7 M2 -49.7 Q12.2 -52.7 15.3 -60.7" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -62.6 Q-9.0 -66.6 -14.9 -75.6 M2 -62.6 Q11.9 -65.6 14.9 -73.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -75.6 Q-7.5 -79.6 -12.5 -88.6 M2 -75.6 Q10.0 -78.6 12.5 -86.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -86.4 Q-5.4 -90.4 -9.1 -99.4 M2 -86.4 Q7.2 -89.4 9.1 -97.4" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(278 251) rotate(36)"><path d="M0 0 C-25 -24.86 -25 -81.36 7 -113 C8.75 -87.01 26.25 -29.380000000000003 0 0Z" fill="url(#leafLight)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip3"><path d="M0 0 C-25 -24.86 -25 -81.36 7 -113 C8.75 -87.01 26.25 -29.380000000000003 0 0Z"/></clipPath><g clip-path="url(#clip3)">
+<path d="M0 0 Q4 -56.5 7 -113" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -24.9 Q-6.4 -28.9 -10.7 -37.9 M2 -24.9 Q8.5 -27.9 10.7 -35.9" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -38.4 Q-8.8 -42.4 -14.7 -51.4 M2 -38.4 Q11.7 -41.4 14.7 -49.4" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -52.0 Q-10.0 -56.0 -16.6 -65.0 M2 -52.0 Q13.3 -55.0 16.6 -63.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -65.5 Q-9.7 -69.5 -16.2 -78.5 M2 -65.5 Q13.0 -68.5 16.2 -76.5" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -79.1 Q-8.1 -83.1 -13.6 -92.1 M2 -79.1 Q10.8 -82.1 13.6 -90.1" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -90.4 Q-5.9 -94.4 -9.8 -103.4 M2 -90.4 Q7.9 -93.4 9.8 -101.4" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(300 264) rotate(61)"><path d="M0 0 C-24 -20.68 -24 -67.67999999999999 -7 -94 C8.399999999999999 -72.38 25.200000000000003 -24.44 0 0Z" fill="url(#leafMid)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip4"><path d="M0 0 C-24 -20.68 -24 -67.67999999999999 -7 -94 C8.399999999999999 -72.38 25.200000000000003 -24.44 0 0Z"/></clipPath><g clip-path="url(#clip4)">
+<path d="M0 0 Q4 -47.0 -7 -94" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -20.7 Q-6.1 -24.7 -10.2 -33.7 M2 -20.7 Q8.2 -23.7 10.2 -31.7" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -32.0 Q-8.5 -36.0 -14.1 -45.0 M2 -32.0 Q11.3 -35.0 14.1 -43.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -43.2 Q-9.6 -47.2 -16.0 -56.2 M2 -43.2 Q12.8 -46.2 16.0 -54.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -54.5 Q-9.3 -58.5 -15.6 -67.5 M2 -54.5 Q12.5 -57.5 15.6 -65.5" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -65.8 Q-7.8 -69.8 -13.0 -78.8 M2 -65.8 Q10.4 -68.8 13.0 -76.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -75.2 Q-5.7 -79.2 -9.5 -88.2 M2 -75.2 Q7.6 -78.2 9.5 -86.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(211 261) rotate(-66)"><path d="M0 0 C-24 -21.12 -24 -69.12 7 -96 C8.399999999999999 -73.92 25.200000000000003 -24.96 0 0Z" fill="url(#leafMid)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip5"><path d="M0 0 C-24 -21.12 -24 -69.12 7 -96 C8.399999999999999 -73.92 25.200000000000003 -24.96 0 0Z"/></clipPath><g clip-path="url(#clip5)">
+<path d="M0 0 Q4 -48.0 7 -96" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -21.1 Q-6.1 -25.1 -10.2 -34.1 M2 -21.1 Q8.2 -24.1 10.2 -32.1" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -32.6 Q-8.5 -36.6 -14.1 -45.6 M2 -32.6 Q11.3 -35.6 14.1 -43.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -44.2 Q-9.6 -48.2 -16.0 -57.2 M2 -44.2 Q12.8 -47.2 16.0 -55.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -55.7 Q-9.3 -59.7 -15.6 -68.7 M2 -55.7 Q12.5 -58.7 15.6 -66.7" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -67.2 Q-7.8 -71.2 -13.0 -80.2 M2 -67.2 Q10.4 -70.2 13.0 -78.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -76.8 Q-5.7 -80.8 -9.5 -89.8 M2 -76.8 Q7.6 -79.8 9.5 -87.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(195 286) rotate(-79)"><path d="M0 0 C-20 -18.92 -20 -61.919999999999995 -7 -86 C7.0 -66.22 21.0 -22.36 0 0Z" fill="url(#leafDark)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip6"><path d="M0 0 C-20 -18.92 -20 -61.919999999999995 -7 -86 C7.0 -66.22 21.0 -22.36 0 0Z"/></clipPath><g clip-path="url(#clip6)">
+<path d="M0 0 Q4 -43.0 -7 -86" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -18.9 Q-5.1 -22.9 -8.5 -31.9 M2 -18.9 Q6.8 -21.9 8.5 -29.9" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -29.2 Q-7.0 -33.2 -11.7 -42.2 M2 -29.2 Q9.4 -32.2 11.7 -40.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -39.6 Q-8.0 -43.6 -13.3 -52.6 M2 -39.6 Q10.6 -42.6 13.3 -50.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -49.9 Q-7.8 -53.9 -13.0 -62.9 M2 -49.9 Q10.4 -52.9 13.0 -60.9" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -60.2 Q-6.5 -64.2 -10.8 -73.2 M2 -60.2 Q8.7 -63.2 10.8 -71.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -68.8 Q-4.7 -72.8 -7.9 -81.8 M2 -68.8 Q6.3 -71.8 7.9 -79.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(316 287) rotate(81)"><path d="M0 0 C-22 -17.6 -22 -57.599999999999994 7 -80 C7.699999999999999 -61.6 23.1 -20.8 0 0Z" fill="url(#leafDark)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip7"><path d="M0 0 C-22 -17.6 -22 -57.599999999999994 7 -80 C7.699999999999999 -61.6 23.1 -20.8 0 0Z"/></clipPath><g clip-path="url(#clip7)">
+<path d="M0 0 Q4 -40.0 7 -80" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -17.6 Q-5.6 -21.6 -9.4 -30.6 M2 -17.6 Q7.5 -20.6 9.4 -28.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -27.2 Q-7.8 -31.2 -12.9 -40.2 M2 -27.2 Q10.3 -30.2 12.9 -38.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -36.8 Q-8.8 -40.8 -14.6 -49.8 M2 -36.8 Q11.7 -39.8 14.6 -47.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -46.4 Q-8.6 -50.4 -14.3 -59.4 M2 -46.4 Q11.4 -49.4 14.3 -57.4" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -56.0 Q-7.2 -60.0 -11.9 -69.0 M2 -56.0 Q9.5 -59.0 11.9 -67.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -64.0 Q-5.2 -68.0 -8.7 -77.0 M2 -64.0 Q6.9 -67.0 8.7 -75.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(230 249) rotate(-24)"><path d="M0 0 C-24 -22.0 -24 -72.0 -7 -100 C8.399999999999999 -77.0 25.200000000000003 -26.0 0 0Z" fill="url(#leafDark)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip8"><path d="M0 0 C-24 -22.0 -24 -72.0 -7 -100 C8.399999999999999 -77.0 25.200000000000003 -26.0 0 0Z"/></clipPath><g clip-path="url(#clip8)">
+<path d="M0 0 Q4 -50.0 -7 -100" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -22.0 Q-6.1 -26.0 -10.2 -35.0 M2 -22.0 Q8.2 -25.0 10.2 -33.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -34.0 Q-8.5 -38.0 -14.1 -47.0 M2 -34.0 Q11.3 -37.0 14.1 -45.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -46.0 Q-9.6 -50.0 -16.0 -59.0 M2 -46.0 Q12.8 -49.0 16.0 -57.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -58.0 Q-9.3 -62.0 -15.6 -71.0 M2 -58.0 Q12.5 -61.0 15.6 -69.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -70.0 Q-7.8 -74.0 -13.0 -83.0 M2 -70.0 Q10.4 -73.0 13.0 -81.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -80.0 Q-5.7 -84.0 -9.5 -93.0 M2 -80.0 Q7.6 -83.0 9.5 -91.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(268 269) rotate(12)"><path d="M0 0 C-26 -21.56 -26 -70.56 7 -98 C9.1 -75.46000000000001 27.3 -25.48 0 0Z" fill="url(#leafMid)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip9"><path d="M0 0 C-26 -21.56 -26 -70.56 7 -98 C9.1 -75.46000000000001 27.3 -25.48 0 0Z"/></clipPath><g clip-path="url(#clip9)">
+<path d="M0 0 Q4 -49.0 7 -98" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -21.6 Q-6.7 -25.6 -11.1 -34.6 M2 -21.6 Q8.9 -24.6 11.1 -32.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -33.3 Q-9.2 -37.3 -15.3 -46.3 M2 -33.3 Q12.2 -36.3 15.3 -44.3" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -45.1 Q-10.4 -49.1 -17.3 -58.1 M2 -45.1 Q13.8 -48.1 17.3 -56.1" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -56.8 Q-10.1 -60.8 -16.9 -69.8 M2 -56.8 Q13.5 -59.8 16.9 -67.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -68.6 Q-8.5 -72.6 -14.1 -81.6 M2 -68.6 Q11.3 -71.6 14.1 -79.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -78.4 Q-6.1 -82.4 -10.2 -91.4 M2 -78.4 Q8.2 -81.4 10.2 -89.4" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(206 300) rotate(-43)"><path d="M0 0 C-24 -18.48 -24 -60.48 -7 -84 C8.399999999999999 -64.68 25.200000000000003 -21.84 0 0Z" fill="url(#leafMid)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip10"><path d="M0 0 C-24 -18.48 -24 -60.48 -7 -84 C8.399999999999999 -64.68 25.200000000000003 -21.84 0 0Z"/></clipPath><g clip-path="url(#clip10)">
+<path d="M0 0 Q4 -42.0 -7 -84" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -18.5 Q-6.1 -22.5 -10.2 -31.5 M2 -18.5 Q8.2 -21.5 10.2 -29.5" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -28.6 Q-8.5 -32.6 -14.1 -41.6 M2 -28.6 Q11.3 -31.6 14.1 -39.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -38.6 Q-9.6 -42.6 -16.0 -51.6 M2 -38.6 Q12.8 -41.6 16.0 -49.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -48.7 Q-9.3 -52.7 -15.6 -61.7 M2 -48.7 Q12.5 -51.7 15.6 -59.7" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -58.8 Q-7.8 -62.8 -13.0 -71.8 M2 -58.8 Q10.4 -61.8 13.0 -69.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -67.2 Q-5.7 -71.2 -9.5 -80.2 M2 -67.2 Q7.6 -70.2 9.5 -78.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(287 292) rotate(41)"><path d="M0 0 C-26 -22.22 -26 -72.72 7 -101 C9.1 -77.77 27.3 -26.26 0 0Z" fill="url(#leafDark)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip11"><path d="M0 0 C-26 -22.22 -26 -72.72 7 -101 C9.1 -77.77 27.3 -26.26 0 0Z"/></clipPath><g clip-path="url(#clip11)">
+<path d="M0 0 Q4 -50.5 7 -101" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -22.2 Q-6.7 -26.2 -11.1 -35.2 M2 -22.2 Q8.9 -25.2 11.1 -33.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -34.3 Q-9.2 -38.3 -15.3 -47.3 M2 -34.3 Q12.2 -37.3 15.3 -45.3" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -46.5 Q-10.4 -50.5 -17.3 -59.5 M2 -46.5 Q13.8 -49.5 17.3 -57.5" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -58.6 Q-10.1 -62.6 -16.9 -71.6 M2 -58.6 Q13.5 -61.6 16.9 -69.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -70.7 Q-8.5 -74.7 -14.1 -83.7 M2 -70.7 Q11.3 -73.7 14.1 -81.7" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -80.8 Q-6.1 -84.8 -10.2 -93.8 M2 -80.8 Q8.2 -83.8 10.2 -91.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(238 288) rotate(-12)"><path d="M0 0 C-24 -18.7 -24 -61.199999999999996 -7 -85 C8.399999999999999 -65.45 25.200000000000003 -22.1 0 0Z" fill="url(#leafMid)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip12"><path d="M0 0 C-24 -18.7 -24 -61.199999999999996 -7 -85 C8.399999999999999 -65.45 25.200000000000003 -22.1 0 0Z"/></clipPath><g clip-path="url(#clip12)">
+<path d="M0 0 Q4 -42.5 -7 -85" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -18.7 Q-6.1 -22.7 -10.2 -31.7 M2 -18.7 Q8.2 -21.7 10.2 -29.7" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -28.9 Q-8.5 -32.9 -14.1 -41.9 M2 -28.9 Q11.3 -31.9 14.1 -39.9" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -39.1 Q-9.6 -43.1 -16.0 -52.1 M2 -39.1 Q12.8 -42.1 16.0 -50.1" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -49.3 Q-9.3 -53.3 -15.6 -62.3 M2 -49.3 Q12.5 -52.3 15.6 -60.3" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -59.5 Q-7.8 -63.5 -13.0 -72.5 M2 -59.5 Q10.4 -62.5 13.0 -70.5" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -68.0 Q-5.7 -72.0 -9.5 -81.0 M2 -68.0 Q7.6 -71.0 9.5 -79.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(304 306) rotate(104)"><path d="M0 0 C-23 -20.24 -23 -66.24 7 -92 C8.049999999999999 -70.84 24.150000000000002 -23.92 0 0Z" fill="url(#leafDark)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip13"><path d="M0 0 C-23 -20.24 -23 -66.24 7 -92 C8.049999999999999 -70.84 24.150000000000002 -23.92 0 0Z"/></clipPath><g clip-path="url(#clip13)">
+<path d="M0 0 Q4 -46.0 7 -92" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -20.2 Q-5.9 -24.2 -9.8 -33.2 M2 -20.2 Q7.9 -23.2 9.8 -31.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -31.3 Q-8.1 -35.3 -13.5 -44.3 M2 -31.3 Q10.8 -34.3 13.5 -42.3" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -42.3 Q-9.2 -46.3 -15.3 -55.3 M2 -42.3 Q12.2 -45.3 15.3 -53.3" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -53.4 Q-9.0 -57.4 -14.9 -66.4 M2 -53.4 Q11.9 -56.4 14.9 -64.4" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -64.4 Q-7.5 -68.4 -12.5 -77.4 M2 -64.4 Q10.0 -67.4 12.5 -75.4" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -73.6 Q-5.4 -77.6 -9.1 -86.6 M2 -73.6 Q7.2 -76.6 9.1 -84.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(182 301) rotate(-113)"><path d="M0 0 C-20 -18.7 -20 -61.199999999999996 -7 -85 C7.0 -65.45 21.0 -22.1 0 0Z" fill="url(#leafDark)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip14"><path d="M0 0 C-20 -18.7 -20 -61.199999999999996 -7 -85 C7.0 -65.45 21.0 -22.1 0 0Z"/></clipPath><g clip-path="url(#clip14)">
+<path d="M0 0 Q4 -42.5 -7 -85" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -18.7 Q-5.1 -22.7 -8.5 -31.7 M2 -18.7 Q6.8 -21.7 8.5 -29.7" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -28.9 Q-7.0 -32.9 -11.7 -41.9 M2 -28.9 Q9.4 -31.9 11.7 -39.9" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -39.1 Q-8.0 -43.1 -13.3 -52.1 M2 -39.1 Q10.6 -42.1 13.3 -50.1" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -49.3 Q-7.8 -53.3 -13.0 -62.3 M2 -49.3 Q10.4 -52.3 13.0 -60.3" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -59.5 Q-6.5 -63.5 -10.8 -72.5 M2 -59.5 Q8.7 -62.5 10.8 -70.5" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -68.0 Q-4.7 -72.0 -7.9 -81.0 M2 -68.0 Q6.3 -71.0 7.9 -79.0" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(218 303) rotate(-157)"><path d="M0 0 C-23 -18.48 -23 -60.48 7 -84 C8.049999999999999 -64.68 24.150000000000002 -21.84 0 0Z" fill="url(#leafMid)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip15"><path d="M0 0 C-23 -18.48 -23 -60.48 7 -84 C8.049999999999999 -64.68 24.150000000000002 -21.84 0 0Z"/></clipPath><g clip-path="url(#clip15)">
+<path d="M0 0 Q4 -42.0 7 -84" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -18.5 Q-5.9 -22.5 -9.8 -31.5 M2 -18.5 Q7.9 -21.5 9.8 -29.5" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -28.6 Q-8.1 -32.6 -13.5 -41.6 M2 -28.6 Q10.8 -31.6 13.5 -39.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -38.6 Q-9.2 -42.6 -15.3 -51.6 M2 -38.6 Q12.2 -41.6 15.3 -49.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -48.7 Q-9.0 -52.7 -14.9 -61.7 M2 -48.7 Q11.9 -51.7 14.9 -59.7" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -58.8 Q-7.5 -62.8 -12.5 -71.8 M2 -58.8 Q10.0 -61.8 12.5 -69.8" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -67.2 Q-5.4 -71.2 -9.1 -80.2 M2 -67.2 Q7.2 -70.2 9.1 -78.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(282 311) rotate(143)"><path d="M0 0 C-24 -22.44 -24 -73.44 -7 -102 C8.399999999999999 -78.54 25.200000000000003 -26.52 0 0Z" fill="url(#leafDark)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip16"><path d="M0 0 C-24 -22.44 -24 -73.44 -7 -102 C8.399999999999999 -78.54 25.200000000000003 -26.52 0 0Z"/></clipPath><g clip-path="url(#clip16)">
+<path d="M0 0 Q4 -51.0 -7 -102" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -22.4 Q-6.1 -26.4 -10.2 -35.4 M2 -22.4 Q8.2 -25.4 10.2 -33.4" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -34.7 Q-8.5 -38.7 -14.1 -47.7 M2 -34.7 Q11.3 -37.7 14.1 -45.7" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -46.9 Q-9.6 -50.9 -16.0 -59.9 M2 -46.9 Q12.8 -49.9 16.0 -57.9" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -59.2 Q-9.3 -63.2 -15.6 -72.2 M2 -59.2 Q12.5 -62.2 15.6 -70.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -71.4 Q-7.8 -75.4 -13.0 -84.4 M2 -71.4 Q10.4 -74.4 13.0 -82.4" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -81.6 Q-5.7 -85.6 -9.5 -94.6 M2 -81.6 Q7.6 -84.6 9.5 -92.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g transform="translate(253 305) rotate(171)"><path d="M0 0 C-27 -22.44 -27 -73.44 7 -102 C9.45 -78.54 28.35 -26.52 0 0Z" fill="url(#leafDark)" stroke="#153e29" stroke-width=".6"/>
+<clipPath id="clip17"><path d="M0 0 C-27 -22.44 -27 -73.44 7 -102 C9.45 -78.54 28.35 -26.52 0 0Z"/></clipPath><g clip-path="url(#clip17)">
+<path d="M0 0 Q4 -51.0 7 -102" fill="none" stroke="#a4c583" stroke-opacity=".48" stroke-width="1.1"/>
+<path d="M2 -22.4 Q-6.9 -26.4 -11.5 -35.4 M2 -22.4 Q9.2 -25.4 11.5 -33.4" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -34.7 Q-9.5 -38.7 -15.9 -47.7 M2 -34.7 Q12.7 -37.7 15.9 -45.7" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -46.9 Q-10.8 -50.9 -17.9 -59.9 M2 -46.9 Q14.4 -49.9 17.9 -57.9" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -59.2 Q-10.5 -63.2 -17.5 -72.2 M2 -59.2 Q14.0 -62.2 17.5 -70.2" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -71.4 Q-8.8 -75.4 -14.6 -84.4 M2 -71.4 Q11.7 -74.4 14.6 -82.4" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+<path d="M2 -81.6 Q-6.4 -85.6 -10.6 -94.6 M2 -81.6 Q8.5 -84.6 10.6 -92.6" fill="none" stroke="#a0c081" stroke-opacity=".23" stroke-width=".75"/>
+</g></g>
+<g font-family="Segoe UI,Arial,sans-serif"><rect x="187" y="378" width="127" height="76" rx="9" fill="#243a16" fill-opacity=".88"/>
+<text x="250" y="391" font-size="8" fill="#d5dfbd" text-anchor="middle">ВЛАЖНОСТЬ ПОЧВЫ 1</text><rect x="190" y="397" width="120" height="4" rx="2" fill="#5c7041"/><rect id="svgMoistureBar" x="190" y="397" width="26.4" height="4" rx="2" fill="#60a5fa"/>
+<text id="svgMoisture" x="246" y="415" font-size="14" font-weight="700" fill="#93c5fd" text-anchor="middle">22</text><text x="264" y="414" font-size="10" fill="#d5dfbd">%</text>
+<text x="250" y="429" font-size="8" fill="#d5dfbd" text-anchor="middle">ВЛАЖНОСТЬ ПОЧВЫ 2</text><rect x="190" y="435" width="120" height="4" rx="2" fill="#5c7041"/><rect id="svgMoisture2Bar" x="190" y="435" width="26.4" height="4" rx="2" fill="#4ade80"/>
+<text id="svgMoisture2" x="246" y="453" font-size="14" font-weight="700" fill="#86efac" text-anchor="middle">22</text><text x="264" y="452" font-size="10" fill="#d5dfbd">%</text></g></svg>
         </div>
 
         <!-- Информационные карточки -->
@@ -529,6 +630,9 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        // ============================================
+        // Состояние
+        // ============================================
         let relayStates = [0, 0];
         let autoWater = false;
         let lampMode = 'manual';
@@ -536,12 +640,18 @@
         let lastMoisture = 68;
         let updateInterval = null;
 
+        // ============================================
+        // Инициализация
+        // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             refreshData();
             updateInterval = setInterval(refreshData, 5000);
             updateThreshold(moistureThreshold);
         });
 
+        // ============================================
+        // Обновление данных
+        // ============================================
         async function refreshData() {
             try {
                 const response = await fetch('/api/status');
@@ -589,16 +699,19 @@
             }
         }
 
+        // ============================================
+        // Автополив
+        // ============================================
         function checkAutoWater() {
             const statusEl = document.getElementById('autoWaterStatus');
-
+            
             if (!autoWater) {
                 statusEl.textContent = '⏸️ Ожидание';
                 return;
             }
 
             const shouldWater = lastMoisture < moistureThreshold;
-
+            
             if (shouldWater) {
                 if (relayStates[1] !== 1) {
                     setRelay(1, 1);
@@ -629,12 +742,15 @@
             }
         }
 
+        // ============================================
+        // Переключение автополива
+        // ============================================
         async function toggleAutoWater() {
             autoWater = !autoWater;
-
+            
             const stateEl = document.getElementById('autoWaterState');
             const toggleEl = document.getElementById('autoWaterToggle');
-
+            
             if (autoWater) {
                 stateEl.textContent = 'ВКЛ';
                 stateEl.className = 'ctrl-state auto';
@@ -655,10 +771,13 @@
                     await setRelay(1, 0);
                 }
             }
-
+            
             showToast(autoWater ? '🤖 Автополив включён' : '🤖 Автополив выключен');
         }
 
+        // ============================================
+        // Управление реле
+        // ============================================
         async function toggleRelay(index) {
             if (index === 1 && autoWater) {
                 showToast('⚠️ Автополив активен! Ручное управление недоступно');
@@ -671,7 +790,7 @@
             }
 
             const newState = relayStates[index] === 0 ? 1 : 0;
-
+            
             try {
                 const response = await fetch('/api/relay', {
                     method: 'POST',
@@ -690,33 +809,39 @@
             }
         }
 
+        // ============================================
+        // Обновление UI реле
+        // ============================================
         function updateRelayUI(index) {
             const state = relayStates[index];
             const stateEl = document.getElementById('relayState' + index);
             const toggleEl = document.getElementById('relayToggle' + index);
-
+            
             if (index === 0 && lampMode === 'always') {
                 stateEl.textContent = 'ВКЛ (авто)';
                 stateEl.className = 'ctrl-state auto';
                 toggleEl.className = 'ctrl-toggle auto-toggle';
                 return;
             }
-
+            
             stateEl.textContent = state ? 'ВКЛ' : 'ВЫКЛ';
             stateEl.className = 'ctrl-state ' + (state ? 'on' : 'off');
             toggleEl.className = 'ctrl-toggle' + (state ? ' active' : '');
         }
 
+        // ============================================
+        // Режимы фитолампы
+        // ============================================
         function setLampMode(mode) {
             lampMode = mode;
-
+            
             document.querySelectorAll('.mode-btn').forEach(btn => {
                 btn.classList.remove('active', 'active-always');
                 if (btn.dataset.mode === mode) {
                     btn.classList.add(mode === 'always' ? 'active-always' : 'active');
                 }
             });
-
+            
             if (mode === 'always') {
                 if (relayStates[0] !== 1) {
                     setRelay(0, 1);
@@ -728,6 +853,9 @@
             }
         }
 
+        // ============================================
+        // Порог влажности
+        // ============================================
         function updateThreshold(value) {
             moistureThreshold = parseInt(value);
             document.getElementById('thresholdDisplay').textContent = moistureThreshold;
@@ -736,6 +864,9 @@
             }
         }
 
+        // ============================================
+        // Вспомогательные функции
+        // ============================================
         async function allOff() {
             try {
                 const response = await fetch('/api/relay/all', {
@@ -766,7 +897,7 @@
         function setStatus(online) {
             const dot = document.getElementById('statusDot');
             const text = document.getElementById('statusText');
-
+            
             if (online) {
                 dot.className = 'status-dot';
                 text.textContent = 'Подключено';
