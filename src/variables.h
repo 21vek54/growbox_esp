@@ -17,11 +17,13 @@
 #include "cJSON.h"
 #include "tca9554.h"
 
+
+#define VERSION "0.2b"
 // ============================================
 // Wi-Fi настройки
 // ============================================
-#define WIFI_SSID      "21VEK"
-#define WIFI_PASS      "vek2121vek"
+#define WIFI_SSID      "21VEK"//"Keenetic-7501"//
+#define WIFI_PASS      "vek2121vek"//"!dontforgetyou!057"//
 
 // ============================================
 // TCA9554 настройки
@@ -36,6 +38,7 @@ extern tca9554_t tca9554;
 typedef struct {
     uint8_t relays[8];
     int moisture;
+    int moisture2;       // Влажность почвы (датчик 
     int temperature;
     int humidity;
     uint32_t uptime;

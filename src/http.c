@@ -75,6 +75,7 @@ static esp_err_t api_status_get_handler(httpd_req_t *req)
     state.uptime = (uint32_t)(esp_timer_get_time() / 1000000);
     
     cJSON_AddNumberToObject(root, "moisture", state.moisture);      // Влажность почвы
+     cJSON_AddNumberToObject(root, "moisture2", state.moisture2);       // Влажность почвы 2
     cJSON_AddNumberToObject(root, "temperature", state.temperature); // Температура
     cJSON_AddNumberToObject(root, "humidity", state.humidity);      // Влажность воздуха
     cJSON_AddNumberToObject(root, "uptime", state.uptime);

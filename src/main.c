@@ -19,6 +19,7 @@ tca9554_t tca9554;
 system_state_t state = {
     .relays = {0, 0, 0, 0, 0, 0, 0, 0},
     .moisture = 0,
+    .moisture2 = 0,   // <-- НОВОЕ
     .temperature = 0,
     .humidity = 0,
     .uptime = 0,
@@ -31,31 +32,34 @@ system_state_t state = {
 void sensors_task(void *pvParameters)
 {
     while (1) {
-        // 1. Читаем влажность почвы (аналоговый датчик)
-        int moisture_percent = adc_sensor_read_percent(NULL);
-        if (moisture_percent >= 0) {
-            state.moisture = moisture_percent;
-            ESP_LOGI("SENSORS", "💧 Влажность почвы: %d%% (raw: %d)", 
-                     moisture_percent, adc_sensor_read_raw());
-        } else {
-            ESP_LOGE("SENSORS", "❌ Ошибка чтения влажности почвы");
+        // 1. Датчик влажности почвы 1 (GPIO1)
+        int moisture1 = adc_sensor_1_read_percent(NULL);
+        if (moisture1 >= 0) {
+            state.moisture = moisture1;
+            ESP_LOGI("SENSORS", "💧 Датчик 1: %d%% (raw: %d)", 
+                     moisture1, adc_sensor_1_read_raw());
         }
         
-        // 2. Читаем температуру и влажность воздуха (RS485)
+        // 2. Датчик влажности почвы 2 (GPIO2)
+        int moisture2 = adc_sensor_2_read_percent(NULL);
+        if (moisture2 >= 0) {
+            state.moisture2 = moisture2;
+            ESP_LOGI("SENSORS", "💧 Датчик 2: %d%% (raw: %d)", 
+                     moisture2, adc_sensor_2_read_raw());
+        }
+        
+        // 3. Температура и влажность воздуха (RS485)
         sensor_data_t sensor = rs485_read_sensor();
         if (sensor.valid) {
             state.temperature = (int)sensor.temperature;
             state.humidity = (int)sensor.humidity;
             ESP_LOGI("SENSORS", "🌡️ T: %.1f°C, 💧 H: %.1f%%", 
                      sensor.temperature, sensor.humidity);
-        } else {
-            ESP_LOGW("SENSORS", "⚠️ Ошибка RS485 (код: %d)", sensor.error_code);
         }
         
-        // Обновляем uptime
         state.uptime = (uint32_t)(esp_timer_get_time() / 1000000);
         
-        vTaskDelay(pdMS_TO_TICKS(5000));  // Опрос каждые 5 секунд
+        vTaskDelay(pdMS_TO_TICKS(5000));
     }
 }
 
@@ -67,7 +71,7 @@ void app_main(void)
     wifi_init_sta();
     init_i2c();
     rs485_init();
-    adc_sensor_init();          // <-- Инициализация ADC
+    adc_sensor_init();
     init_spiffs();
     start_webserver();
     
@@ -75,7 +79,6 @@ void app_main(void)
     ESP_ERROR_CHECK(tca9554_init(&tca9554, i2c_bus, TCA9554_ADDR));
     ESP_LOGI(TAG, "✅ TCA9554 инициализирован");
     
-    // Запускаем задачу опроса датчиков (вместо rs485_task)
     xTaskCreate(sensors_task, "sensors_task", 4096, NULL, 5, NULL);
     
     ESP_LOGI(TAG, "✅ Система запущена!");

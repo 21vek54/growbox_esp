@@ -6,6 +6,7 @@
     <title>🌱 Растишка - Умный сад</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(180deg, #0c1929 0%, #1a2a3a 100%);
@@ -16,6 +17,7 @@
             justify-content: center;
             align-items: flex-start;
         }
+
         .container {
             max-width: 900px;
             width: 100%;
@@ -26,12 +28,14 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
+
         .header {
             text-align: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
+
         .header h1 {
             font-size: 36px;
             background: linear-gradient(135deg, #4ade80, #22d3ee);
@@ -39,12 +43,14 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
         .header p {
             opacity: 0.5;
             font-size: 14px;
             letter-spacing: 2px;
             margin-top: 3px;
         }
+
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -57,11 +63,13 @@
             flex-wrap: wrap;
             gap: 8px;
         }
+
         .status-indicator {
             display: flex;
             align-items: center;
             gap: 10px;
         }
+
         .status-dot {
             width: 10px;
             height: 10px;
@@ -69,14 +77,17 @@
             background: #4ade80;
             animation: pulse 2s infinite;
         }
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.4; }
         }
+
         .status-dot.offline {
             background: #f87171;
             animation: none;
         }
+
         .status-text { font-size: 13px; font-weight: 500; }
         .ip-address { font-size: 13px; opacity: 0.4; font-family: monospace; }
 
@@ -85,6 +96,7 @@
             max-width: 500px;
             margin: 0 auto 20px;
         }
+
         .plant-container svg {
             width: 100%;
             height: auto;
@@ -100,6 +112,7 @@
             gap: 12px;
             margin: 15px 0 20px;
         }
+
         .info-card {
             background: rgba(255, 255, 255, 0.04);
             border-radius: 14px;
@@ -108,16 +121,19 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.3s;
         }
+
         .info-card:hover {
             background: rgba(255, 255, 255, 0.08);
             transform: translateY(-2px);
         }
+
         .info-card .icon { font-size: 22px; margin-bottom: 4px; }
         .info-card .label { font-size: 11px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; }
         .info-card .value { font-size: 22px; font-weight: 700; }
         .info-card .value.temp { background: linear-gradient(135deg, #f87171, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .info-card .value.humidity { background: linear-gradient(135deg, #60a5fa, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .info-card .value.moisture { background: linear-gradient(135deg, #60a5fa, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .info-card .value.moisture2 { background: linear-gradient(135deg, #4ade80, #22c55e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
         .controls-title {
             font-size: 16px;
@@ -128,11 +144,13 @@
             gap: 10px;
         }
         .controls-title span { opacity: 0.6; }
+
         .controls-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
         }
+
         .control-card {
             background: rgba(255, 255, 255, 0.04);
             border-radius: 16px;
@@ -145,19 +163,22 @@
             transition: all 0.3s;
             cursor: default;
         }
-        .control-card.clickable {
-            cursor: pointer;
-        }
+
+        .control-card.clickable { cursor: pointer; }
+
         .control-card.clickable:hover {
             background: rgba(255, 255, 255, 0.08);
             transform: translateY(-3px);
         }
+
         .control-card.disabled {
             opacity: 0.4;
             cursor: not-allowed;
         }
+
         .control-card .ctrl-icon { font-size: 28px; }
         .control-card .ctrl-name { font-size: 14px; font-weight: 500; }
+
         .control-card .ctrl-state {
             font-size: 13px;
             padding: 4px 16px;
@@ -165,10 +186,10 @@
             font-weight: 600;
             transition: all 0.3s;
         }
+
         .ctrl-state.on { background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
         .ctrl-state.off { background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
         .ctrl-state.auto { background: rgba(96, 165, 250, 0.2); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3); }
-        .ctrl-state.disabled-state { background: rgba(255, 255, 255, 0.05); color: #666; border: 1px solid rgba(255, 255, 255, 0.05); }
 
         .control-card .ctrl-toggle {
             width: 50px;
@@ -179,7 +200,9 @@
             transition: all 0.3s;
             cursor: pointer;
         }
+
         .control-card .ctrl-toggle.active { background: rgba(74, 222, 128, 0.3); }
+
         .control-card .ctrl-toggle .knob {
             width: 22px;
             height: 22px;
@@ -190,6 +213,7 @@
             left: 3px;
             transition: all 0.3s;
         }
+
         .control-card .ctrl-toggle.active .knob { left: 25px; background: #4ade80; }
         .control-card .ctrl-toggle.auto-toggle { background: rgba(96, 165, 250, 0.2); }
         .control-card .ctrl-toggle.auto-toggle .knob { background: #60a5fa; left: 25px; }
@@ -199,6 +223,7 @@
             gap: 6px;
             margin-top: 4px;
         }
+
         .mode-btn {
             padding: 4px 12px;
             border-radius: 12px;
@@ -210,6 +235,7 @@
             cursor: pointer;
             transition: all 0.3s;
         }
+
         .mode-btn:hover { background: rgba(255,255,255,0.1); }
         .mode-btn.active {
             background: rgba(74, 222, 128, 0.2);
@@ -229,6 +255,7 @@
             margin-top: 20px;
             flex-wrap: wrap;
         }
+
         .btn {
             padding: 10px 28px;
             border: none;
@@ -239,10 +266,10 @@
             transition: all 0.3s;
             color: #fff;
         }
+
         .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); }
         .btn-primary { background: linear-gradient(135deg, #4ade80, #22d3ee); }
         .btn-secondary { background: rgba(255, 255, 255, 0.1); }
-        .btn-warning { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
 
         .toast {
             position: fixed;
@@ -261,6 +288,7 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             z-index: 1000;
         }
+
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         .moisture-threshold {
@@ -273,10 +301,12 @@
             border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.05);
         }
+
         .moisture-threshold label {
             font-size: 12px;
             opacity: 0.6;
         }
+
         .moisture-threshold input[type="range"] {
             flex: 1;
             height: 4px;
@@ -285,6 +315,7 @@
             border-radius: 2px;
             outline: none;
         }
+
         .moisture-threshold input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 16px;
@@ -293,6 +324,7 @@
             background: #4ade80;
             cursor: pointer;
         }
+
         .moisture-threshold .threshold-value {
             font-size: 14px;
             font-weight: 600;
@@ -367,26 +399,32 @@
 
                 <rect x="0" y="0" width="500" height="500" fill="#1a2a3a" rx="20"/>
 
+                <!-- Температура -->
                 <text x="30" y="40" font-size="11" fill="rgba(255,255,255,0.3)" font-weight="600">🌡️ ТЕМПЕРАТУРА</text>
                 <text id="svgTemp" x="30" y="72" font-size="30" fill="#f87171" font-weight="700">22</text>
                 <text x="85" y="72" font-size="16" fill="rgba(255,255,255,0.25)">°C</text>
 
+                <!-- Влажность воздуха -->
                 <text x="370" y="40" font-size="11" fill="rgba(255,255,255,0.3)" font-weight="600">💧 ВЛАЖНОСТЬ</text>
                 <text id="svgHumidity" x="370" y="72" font-size="30" fill="#60a5fa" font-weight="700">65</text>
                 <text x="435" y="72" font-size="16" fill="rgba(255,255,255,0.25)">%</text>
 
+                <!-- Горшок -->
                 <path d="M160 330 L190 430 L310 430 L340 330 Z" fill="url(#potGrad)" stroke="#8a4a2a" stroke-width="1.5" filter="url(#shadow)"/>
                 <rect x="145" y="318" width="210" height="16" rx="6" fill="url(#potRim)" stroke="#8a4a2a" stroke-width="1"/>
                 <path d="M180 340 L195 420 Q200 425 200 420 L190 340 Z" fill="rgba(255,255,255,0.08)"/>
 
+                <!-- Почва -->
                 <ellipse cx="250" cy="330" rx="85" ry="14" fill="url(#soilGrad)"/>
                 <ellipse cx="220" cy="328" rx="15" ry="5" fill="#4e342e" opacity="0.6"/>
                 <ellipse cx="275" cy="332" rx="10" ry="4" fill="#4e342e" opacity="0.5"/>
 
+                <!-- Стебли -->
                 <path d="M250 328 Q248 290 245 260 Q240 230 238 200" stroke="#1a5a3a" stroke-width="5" fill="none" stroke-linecap="round"/>
                 <path d="M248 300 Q225 270 210 235 Q200 215 195 190" stroke="#1a5a3a" stroke-width="4" fill="none" stroke-linecap="round"/>
                 <path d="M252 290 Q275 265 295 235 Q310 215 315 195" stroke="#1a5a3a" stroke-width="4" fill="none" stroke-linecap="round"/>
 
+                <!-- Листья -->
                 <ellipse cx="195" cy="175" rx="50" ry="25" fill="url(#leafDark)" transform="rotate(-35, 195, 175)" filter="url(#shadow)"/>
                 <ellipse cx="305" cy="180" rx="50" ry="25" fill="url(#leafMid)" transform="rotate(30, 305, 180)" filter="url(#shadow)"/>
                 <ellipse cx="250" cy="160" rx="55" ry="22" fill="url(#leafLight)" transform="rotate(-5, 250, 160)" filter="url(#shadow)"/>
@@ -395,13 +433,19 @@
                 <ellipse cx="185" cy="275" rx="35" ry="16" fill="url(#leafDark)" transform="rotate(-40, 185, 275)" filter="url(#shadow)"/>
                 <ellipse cx="315" cy="270" rx="35" ry="16" fill="url(#leafLight)" transform="rotate(35, 315, 270)" filter="url(#shadow)"/>
 
-                <text x="250" y="362" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">ВЛАЖНОСТЬ ПОЧВЫ</text>
+                <!-- Влажность почвы 1 -->
+                <text x="250" y="362" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">ВЛАЖНОСТЬ ПОЧВЫ 1</text>
                 <rect x="190" y="370" width="120" height="8" rx="4" fill="rgba(255,255,255,0.06)"/>
                 <rect id="svgMoistureBar" x="190" y="370" width="72" height="8" rx="4" fill="#60a5fa" opacity="0.7"/>
                 <text id="svgMoisture" x="250" y="397" font-size="18" fill="#60a5fa" font-weight="700" text-anchor="middle">68</text>
                 <text x="300" y="397" font-size="12" fill="rgba(255,255,255,0.2)">%</text>
 
-                <!-- ONLINE и иконка УДАЛЕНЫ -->
+                <!-- Влажность почвы 2 -->
+                <text x="250" y="420" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">ВЛАЖНОСТЬ ПОЧВЫ 2</text>
+                <rect x="190" y="428" width="120" height="8" rx="4" fill="rgba(255,255,255,0.06)"/>
+                <rect id="svgMoisture2Bar" x="190" y="428" width="72" height="8" rx="4" fill="#4ade80" opacity="0.7"/>
+                <text id="svgMoisture2" x="250" y="455" font-size="18" fill="#4ade80" font-weight="700" text-anchor="middle">68</text>
+                <text x="300" y="455" font-size="12" fill="rgba(255,255,255,0.2)">%</text>
             </svg>
         </div>
 
@@ -419,8 +463,13 @@
             </div>
             <div class="info-card">
                 <div class="icon">💦</div>
-                <div class="label">Влажность почвы</div>
+                <div class="label">Влажность почвы 1</div>
                 <div class="value moisture" id="cardMoisture">--%</div>
+            </div>
+            <div class="info-card">
+                <div class="icon">💧</div>
+                <div class="label">Влажность почвы 2</div>
+                <div class="value moisture2" id="cardMoisture2">--%</div>
             </div>
         </div>
 
@@ -480,9 +529,6 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // ============================================
-        // Состояние
-        // ============================================
         let relayStates = [0, 0];
         let autoWater = false;
         let lampMode = 'manual';
@@ -490,18 +536,12 @@
         let lastMoisture = 68;
         let updateInterval = null;
 
-        // ============================================
-        // Инициализация
-        // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             refreshData();
             updateInterval = setInterval(refreshData, 5000);
             updateThreshold(moistureThreshold);
         });
 
-        // ============================================
-        // Обновление данных
-        // ============================================
         async function refreshData() {
             try {
                 const response = await fetch('/api/status');
@@ -510,19 +550,25 @@
 
                 const temp = data.temperature || 22;
                 const humidity = data.humidity || 65;
-                const moisture = data.moisture || 68;
+                const moisture = data.moisture || 0;
+                const moisture2 = data.moisture2 || 0;
                 lastMoisture = moisture;
 
                 document.getElementById('svgTemp').textContent = temp;
                 document.getElementById('svgHumidity').textContent = humidity;
                 document.getElementById('svgMoisture').textContent = moisture;
-                
+                document.getElementById('svgMoisture2').textContent = moisture2;
+
                 const barWidth = Math.min(100, Math.max(0, moisture)) * 1.15;
                 document.getElementById('svgMoistureBar').setAttribute('width', Math.min(120, barWidth + 20));
+
+                const barWidth2 = Math.min(100, Math.max(0, moisture2)) * 1.15;
+                document.getElementById('svgMoisture2Bar').setAttribute('width', Math.min(120, barWidth2 + 20));
 
                 document.getElementById('cardTemp').textContent = temp + '°C';
                 document.getElementById('cardHumidity').textContent = humidity + '%';
                 document.getElementById('cardMoisture').textContent = moisture + '%';
+                document.getElementById('cardMoisture2').textContent = moisture2 + '%';
 
                 if (data.relays) {
                     relayStates[0] = data.relays[0] || 0;
@@ -543,19 +589,16 @@
             }
         }
 
-        // ============================================
-        // Автополив
-        // ============================================
         function checkAutoWater() {
             const statusEl = document.getElementById('autoWaterStatus');
-            
+
             if (!autoWater) {
                 statusEl.textContent = '⏸️ Ожидание';
                 return;
             }
 
             const shouldWater = lastMoisture < moistureThreshold;
-            
+
             if (shouldWater) {
                 if (relayStates[1] !== 1) {
                     setRelay(1, 1);
@@ -586,15 +629,12 @@
             }
         }
 
-        // ============================================
-        // Переключение автополива
-        // ============================================
         async function toggleAutoWater() {
             autoWater = !autoWater;
-            
+
             const stateEl = document.getElementById('autoWaterState');
             const toggleEl = document.getElementById('autoWaterToggle');
-            
+
             if (autoWater) {
                 stateEl.textContent = 'ВКЛ';
                 stateEl.className = 'ctrl-state auto';
@@ -615,13 +655,10 @@
                     await setRelay(1, 0);
                 }
             }
-            
+
             showToast(autoWater ? '🤖 Автополив включён' : '🤖 Автополив выключен');
         }
 
-        // ============================================
-        // Управление реле
-        // ============================================
         async function toggleRelay(index) {
             if (index === 1 && autoWater) {
                 showToast('⚠️ Автополив активен! Ручное управление недоступно');
@@ -634,7 +671,7 @@
             }
 
             const newState = relayStates[index] === 0 ? 1 : 0;
-            
+
             try {
                 const response = await fetch('/api/relay', {
                     method: 'POST',
@@ -653,39 +690,33 @@
             }
         }
 
-        // ============================================
-        // Обновление UI реле
-        // ============================================
         function updateRelayUI(index) {
             const state = relayStates[index];
             const stateEl = document.getElementById('relayState' + index);
             const toggleEl = document.getElementById('relayToggle' + index);
-            
+
             if (index === 0 && lampMode === 'always') {
                 stateEl.textContent = 'ВКЛ (авто)';
                 stateEl.className = 'ctrl-state auto';
                 toggleEl.className = 'ctrl-toggle auto-toggle';
                 return;
             }
-            
+
             stateEl.textContent = state ? 'ВКЛ' : 'ВЫКЛ';
             stateEl.className = 'ctrl-state ' + (state ? 'on' : 'off');
             toggleEl.className = 'ctrl-toggle' + (state ? ' active' : '');
         }
 
-        // ============================================
-        // Режимы фитолампы
-        // ============================================
         function setLampMode(mode) {
             lampMode = mode;
-            
+
             document.querySelectorAll('.mode-btn').forEach(btn => {
                 btn.classList.remove('active', 'active-always');
                 if (btn.dataset.mode === mode) {
                     btn.classList.add(mode === 'always' ? 'active-always' : 'active');
                 }
             });
-            
+
             if (mode === 'always') {
                 if (relayStates[0] !== 1) {
                     setRelay(0, 1);
@@ -697,9 +728,6 @@
             }
         }
 
-        // ============================================
-        // Порог влажности
-        // ============================================
         function updateThreshold(value) {
             moistureThreshold = parseInt(value);
             document.getElementById('thresholdDisplay').textContent = moistureThreshold;
@@ -708,9 +736,6 @@
             }
         }
 
-        // ============================================
-        // Вспомогательные функции
-        // ============================================
         async function allOff() {
             try {
                 const response = await fetch('/api/relay/all', {
@@ -741,7 +766,7 @@
         function setStatus(online) {
             const dot = document.getElementById('statusDot');
             const text = document.getElementById('statusText');
-            
+
             if (online) {
                 dot.className = 'status-dot';
                 text.textContent = 'Подключено';
