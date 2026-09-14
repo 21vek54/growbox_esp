@@ -12,18 +12,23 @@
 #include "esp_log.h"
 #include "nvs_flash.h"
 #include "esp_http_server.h"
-#include "esp_spiffs.h"
 #include "esp_timer.h"
 #include "cJSON.h"
 #include "tca9554.h"
 
 
-#define VERSION "0.2b"
+#define VERSION "0.3"
 // ============================================
 // Wi-Fi настройки
 // ============================================
 #define WIFI_SSID      "21VEK"//"Keenetic-7501"//
 #define WIFI_PASS      "vek2121vek"//"!dontforgetyou!057"//
+
+// ============================================
+// ArduinoOTA / espota (должен совпадать с upload_flags в platformio.ini)
+// ============================================
+#define OTA_PORT       3232
+#define OTA_PASS       "rastishka-ota"
 
 // ============================================
 // TCA9554 настройки

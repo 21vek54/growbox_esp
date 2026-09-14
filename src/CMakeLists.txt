@@ -7,4 +7,5 @@ idf_component_register(SRCS
     "main.c" 
     "http.c" 
     "wifi_handler.c"
+    "arduino_ota.c"
 )

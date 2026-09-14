@@ -1,65 +1,20 @@
 #include "http.h"
 
-// ============================================
-// SPIFFS инициализация
-// ============================================
-void init_spiffs(void)
-{
-    esp_vfs_spiffs_conf_t conf = {
-        .base_path = "/spiffs",
-        .partition_label = NULL,
-        .max_files = 5,
-        .format_if_mount_failed = true
-    };
-
-    esp_err_t ret = esp_vfs_spiffs_register(&conf);
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "Ошибка монтирования SPIFFS (%s)", esp_err_to_name(ret));
-        return;
-    }
-
-    size_t total = 0, used = 0;
-    ret = esp_spiffs_info(NULL, &total, &used);
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "Ошибка получения информации SPIFFS");
-    } else {
-        ESP_LOGI(TAG, "SPIFFS: всего %d байт, используется %d байт", total, used);
-    }
-}
-
-// ============================================
-// HTTP обработчики
-// ============================================
-
-// Главная страница
 static esp_err_t root_get_handler(httpd_req_t *req)
 {
-    FILE* f = fopen("/spiffs/index.html", "r");
-    if (f == NULL) {
-        ESP_LOGE(TAG, "Не удалось открыть index.html");
-        httpd_resp_send_404(req);
-        return ESP_FAIL;
-    }
-
-    fseek(f, 0, SEEK_END);
-    size_t size = ftell(f);
-    fseek(f, 0, SEEK_SET);
-
-    char* buffer = malloc(size + 1);
-    if (buffer == NULL) {
-        fclose(f);
+    cJSON *root = cJSON_CreateObject();
+    if (root == NULL) {
         httpd_resp_send_500(req);
         return ESP_FAIL;
     }
-
-    size_t read_size = fread(buffer, 1, size, f);
-    buffer[read_size] = '\0';
-    fclose(f);
-
-    httpd_resp_set_type(req, "text/html; charset=utf-8");
-    httpd_resp_send(req, buffer, read_size);
-    
-    free(buffer);
+    cJSON_AddStringToObject(root, "name", "rastishka");
+    cJSON_AddStringToObject(root, "version", VERSION);
+    cJSON_AddStringToObject(root, "ota", "espota");
+    char *response = cJSON_Print(root);
+    cJSON_Delete(root);
+    httpd_resp_set_type(req, "application/json");
+    httpd_resp_send(req, response, strlen(response));
+    free(response);
     return ESP_OK;
 }
 
@@ -80,6 +35,7 @@ static esp_err_t api_status_get_handler(httpd_req_t *req)
     cJSON_AddNumberToObject(root, "humidity", state.humidity);      // Влажность воздуха
     cJSON_AddNumberToObject(root, "uptime", state.uptime);
     cJSON_AddStringToObject(root, "ip", state.ip);
+    cJSON_AddStringToObject(root, "version", VERSION);
     
     // Состояние реле
     cJSON *relays = cJSON_CreateArray();

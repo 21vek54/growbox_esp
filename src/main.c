@@ -9,6 +9,7 @@
 #include "wifi_handler.h"
 #include "rs485.h"
 #include "adc_sensor.h"
+#include "arduino_ota.h"
 
 // ============================================
 // Глобальные переменные
@@ -72,8 +73,9 @@ void app_main(void)
     init_i2c();
     rs485_init();
     adc_sensor_init();
-    init_spiffs();
+    arduino_ota_mark_valid();
     start_webserver();
+    arduino_ota_start();
     
     ESP_ERROR_CHECK(i2c_new_master_bus(&bus_config, &i2c_bus));
     ESP_ERROR_CHECK(tca9554_init(&tca9554, i2c_bus, TCA9554_ADDR));
@@ -81,8 +83,8 @@ void app_main(void)
     
     xTaskCreate(sensors_task, "sensors_task", 4096, NULL, 5, NULL);
     
-    ESP_LOGI(TAG, "✅ Система запущена!");
-    ESP_LOGI(TAG, "🌐 Откройте: http://%s", state.ip);
+    ESP_LOGI(TAG, "✅ Система запущена! API: http://%s/api/status", state.ip);
+    ESP_LOGI(TAG, "📡 OTA (espota) UDP %d, пароль из OTA_PASS", OTA_PORT);
 
     while (1) {
         vTaskDelay(pdMS_TO_TICKS(1000));

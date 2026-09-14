@@ -1,6 +1,6 @@
 # 🌱 growbox_esp — Растишка
 
-Прошивка умного гроубокса на **ESP32-S3** (PlatformIO + ESP-IDF): датчики, реле и веб-интерфейс «Растишка».
+Прошивка умного гроубокса на **ESP32-S3** (PlatformIO + ESP-IDF): датчики, реле, HTTP API и обновление по воздуху (ArduinoOTA / espota).
 
 ![Превью растения](docs/plant-preview.png)
 
@@ -9,8 +9,8 @@
 - Температура и влажность воздуха (RS485)
 - Влажность почвы (два датчика ADC)
 - Управление реле через TCA9554 (фитолампа, полив)
-- Веб-UI из SPIFFS (`data/index.html`): статусы, автополив, режимы лампы
 - HTTP API для статуса и реле
+- OTA по Wi‑Fi: `pio run -e ota -t upload` (протокол ArduinoOTA / espota)
 
 ## Железо
 
@@ -24,26 +24,26 @@
 ## Быстрый старт
 
 ```bash
-# Собрать и прошить прошивку
-pio run -t upload
+# Первая прошивка — только USB (меняет таблицу разделов)
+pio run -e esp32-s3-devkitc-1 -t upload
 
-# Залить веб-файлы в SPIFFS
-pio run -t uploadfs
-
-# Монитор
+# Монитор — в логе будет IP
 pio device monitor
 ```
 
-В `platformio.ini` при необходимости поправьте `upload_port` (сейчас `COM25`).
+Дальше по воздуху. В `platformio.ini` в секции `[env:ota]` укажите IP платы и тот же пароль, что `OTA_PASS` в `src/variables.h` (сейчас `rastishka-ota`):
 
-После подключения к Wi‑Fi откройте в браузере IP устройства (пишется в лог).
+```bash
+pio run -e ota -t upload
+```
+
+Статус: `http://<IP>/api/status`
 
 ## Структура
 
 ```
-src/           — main, HTTP, Wi‑Fi
+src/           — main, HTTP, Wi‑Fi, ArduinoOTA
 lib/           — ADC, I2C, RS485, TCA9554
-data/          — веб-интерфейс (index.html)
 docs/          — превью UI
 ```
 
@@ -51,8 +51,8 @@ docs/          — превью UI
 
 | Метод | Путь | Описание |
 |-------|------|----------|
-| `GET` | `/` | Веб-интерфейс |
-| `GET` | `/api/status` | JSON: температура, влажность, почва, реле, IP |
+| `GET` | `/` | JSON: имя, версия, ota |
+| `GET` | `/api/status` | JSON: температура, влажность, почва, реле, IP, версия |
 | `POST` | `/api/relay` | `{"relay":0\|1,"state":0\|1}` |
 | `POST` | `/api/relay/all` | `{"state":0\|1}` |
 
