@@ -11,6 +11,7 @@
 - Управление реле через TCA9554 (фитолампа, полив)
 - HTTP API для статуса и реле
 - OTA по Wi‑Fi: `pio run -e ota -t upload` (протокол ArduinoOTA / espota)
+- MQTT на Mosquitto SZBOX: средняя телеметрия раз в минуту (`termo/home/rastishka/status`)
 
 ## Железо
 
@@ -38,6 +39,17 @@ pio run -e ota -t upload
 ```
 
 Статус: `http://<IP>/api/status`
+
+### MQTT (средние раз в минуту)
+
+1. Скопируйте `src/secrets.h.example` → `src/secrets.h` и укажите пароль пользователя `esp` на брокере `192.168.1.92`.
+2. После прошивки подписка:
+
+```bash
+mosquitto_sub -h 192.168.1.92 -u esp -P '...' -t "termo/home/rastishka/#" -v
+```
+
+Сообщения с retain, примерно раз в 60 с; в JSON есть `samples` (число усреднённых опросов за минуту).
 
 ## Структура
 

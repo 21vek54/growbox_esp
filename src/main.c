@@ -10,6 +10,7 @@
 #include "rs485.h"
 #include "adc_sensor.h"
 #include "arduino_ota.h"
+#include "mqtt_log.h"
 
 // ============================================
 // Глобальные переменные
@@ -59,6 +60,9 @@ void sensors_task(void *pvParameters)
         }
         
         state.uptime = (uint32_t)(esp_timer_get_time() / 1000000);
+
+        mqtt_log_feed_sample(state.moisture, state.moisture2,
+                             state.temperature, state.humidity);
         
         vTaskDelay(pdMS_TO_TICKS(5000));
     }
@@ -70,6 +74,7 @@ void sensors_task(void *pvParameters)
 void app_main(void)
 {
     wifi_init_sta();
+    mqtt_log_start();
     init_i2c();
     rs485_init();
     adc_sensor_init();
