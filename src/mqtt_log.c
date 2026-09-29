@@ -12,6 +12,7 @@
 #include "cJSON.h"
 #include "variables.h"
 #include "secrets.h"
+#include "health.h"
 
 static const char *MQTT_TAG = "MQTT_LOG";
 
@@ -20,6 +21,13 @@ static const char *MQTT_TAG = "MQTT_LOG";
 static esp_mqtt_client_handle_t s_client;
 static SemaphoreHandle_t s_lock;
 static int64_t s_last_publish_us;
+static volatile bool s_connected;
+static volatile uint32_t s_last_publish_ok_s;
+
+static uint32_t now_s(void)
+{
+    return (uint32_t)(esp_timer_get_time() / 1000000);
+}
 
 static struct {
     int64_t sum_moisture;
@@ -60,6 +68,8 @@ static char *build_payload(int samples)
     cJSON_AddNumberToObject(root, "uptime", state.uptime);
     cJSON_AddStringToObject(root, "ip", state.ip);
     cJSON_AddStringToObject(root, "version", VERSION);
+    cJSON_AddStringToObject(root, "reset_reason", health_reset_reason());
+    cJSON_AddNumberToObject(root, "boot_count", health_boot_count());
 
     cJSON *relays = cJSON_CreateArray();
     for (int i = 0; i < 8; i++) {
@@ -87,9 +97,10 @@ static void try_publish(void)
 
     int msg_id = esp_mqtt_client_publish(s_client, MQTT_TOPIC, payload,
                                          0, 0, 1);
-    if (msg_id < 0) {
+    if (msg_id < 0 || !s_connected) {
         ESP_LOGW(MQTT_TAG, "Publish не отправлен");
     } else {
+        s_last_publish_ok_s = now_s();
         ESP_LOGI(MQTT_TAG, "Опубликовано %s (%d samples)", MQTT_TOPIC, samples);
     }
     free(payload);
@@ -106,9 +117,11 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
 
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
+        s_connected = true;
         ESP_LOGI(MQTT_TAG, "Подключено к брокеру %s", MQTT_HOST);
         break;
     case MQTT_EVENT_DISCONNECTED:
+        s_connected = false;
         ESP_LOGW(MQTT_TAG, "Отключено от брокера");
         break;
     case MQTT_EVENT_ERROR:
@@ -124,6 +137,7 @@ void mqtt_log_start(void)
     s_lock = xSemaphoreCreateMutex();
     reset_accumulator();
     s_last_publish_us = esp_timer_get_time();
+    s_last_publish_ok_s = now_s();
 
     char uri[64];
     snprintf(uri, sizeof(uri), "mqtt://%s:%d", MQTT_HOST, MQTT_PORT);
@@ -139,6 +153,11 @@ void mqtt_log_start(void)
     esp_mqtt_client_register_event(s_client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
     esp_mqtt_client_start(s_client);
     ESP_LOGI(MQTT_TAG, "Клиент MQTT → %s, топик %s", uri, MQTT_TOPIC);
+}
+
+uint32_t mqtt_log_since_publish_s(void)
+{
+    return now_s() - s_last_publish_ok_s;
 }
 
 void mqtt_log_feed_sample(int moisture, int moisture2, int temperature, int humidity)

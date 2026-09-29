@@ -1,7 +1,43 @@
 #include "wifi_handler.h"
 
+#define WIFI_RETRY_MIN_MS   2000
+#define WIFI_RETRY_MAX_MS   60000
+#define WIFI_START_WAIT_MS  30000
+
 static int s_retry_num = 0;
 static EventGroupHandle_t s_wifi_event_group;
+static esp_timer_handle_t s_retry_timer;
+static volatile bool s_online;
+static volatile uint32_t s_offline_since_s;
+
+static uint32_t now_s(void)
+{
+    return (uint32_t)(esp_timer_get_time() / 1000000);
+}
+
+static void retry_timer_cb(void *arg)
+{
+    (void)arg;
+    esp_wifi_connect();
+}
+
+static void schedule_reconnect(void)
+{
+    uint32_t delay_ms = WIFI_RETRY_MIN_MS;
+    for (int i = 0; i < s_retry_num && delay_ms < WIFI_RETRY_MAX_MS; i++) {
+        delay_ms *= 2;
+    }
+    if (delay_ms > WIFI_RETRY_MAX_MS) {
+        delay_ms = WIFI_RETRY_MAX_MS;
+    }
+    s_retry_num++;
+
+    ESP_LOGW(TAG, "Отключено, переподключение через %lu с (попытка %d)",
+             (unsigned long)(delay_ms / 1000), s_retry_num);
+    esp_timer_stop(s_retry_timer);
+    esp_timer_start_once(s_retry_timer, (uint64_t)delay_ms * 1000);
+}
+
 // ============================================
 // Wi-Fi обработчик
 // ============================================
@@ -11,43 +47,46 @@ static void event_handler(void* arg, esp_event_base_t event_base,
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         esp_wifi_connect();
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
-        if (s_retry_num < 5) {
-            ESP_LOGW(TAG, "Отключено, переподключаемся... (попытка %d)", s_retry_num + 1);
-            s_retry_num++;
-            vTaskDelay(pdMS_TO_TICKS(2000));
-            esp_wifi_connect();
-        } else {
-            ESP_LOGE(TAG, "❌ Не удалось подключиться к Wi-Fi после 5 попыток");
-            if (s_wifi_event_group) {
-                xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
-            }
+        if (s_online) {
+            s_offline_since_s = now_s();
+            s_online = false;
         }
+        xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+        schedule_reconnect();
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
         ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
         snprintf(state.ip, sizeof(state.ip), IPSTR, IP2STR(&event->ip_info.ip));
         ESP_LOGI(TAG, "✅ Подключено! IP: %s", state.ip);
         s_retry_num = 0;
-        if (s_wifi_event_group) {
-            xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
-        }
+        s_online = true;
+        xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
+}
+
+uint32_t wifi_offline_s(void)
+{
+    if (s_online) {
+        return 0;
+    }
+    return now_s() - s_offline_since_s;
 }
 
 void wifi_init_sta(void)
 {
-    // СОЗДАЁМ Event Group ДО ВСЕГО
     s_wifi_event_group = xEventGroupCreate();
     if (s_wifi_event_group == NULL) {
         ESP_LOGE(TAG, "❌ Не удалось создать Event Group");
         return;
     }
 
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK(ret);
+    const esp_timer_create_args_t retry_args = {
+        .callback = retry_timer_cb,
+        .name = "wifi_retry",
+    };
+    ESP_ERROR_CHECK(esp_timer_create(&retry_args, &s_retry_timer));
+
+    s_offline_since_s = now_s();
+    s_online = false;
 
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
@@ -83,18 +122,15 @@ void wifi_init_sta(void)
 
     ESP_LOGI(TAG, "Подключение к Wi-Fi...");
 
-    // Ждём подключения или ошибки
     EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
-            WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
+            WIFI_CONNECTED_BIT,
             pdFALSE,
             pdFALSE,
-            portMAX_DELAY);
+            pdMS_TO_TICKS(WIFI_START_WAIT_MS));
 
     if (bits & WIFI_CONNECTED_BIT) {
         ESP_LOGI(TAG, "✅ Подключено к Wi-Fi!");
-    } else if (bits & WIFI_FAIL_BIT) {
-        ESP_LOGE(TAG, "❌ Не удалось подключиться к Wi-Fi");
     } else {
-        ESP_LOGE(TAG, "❌ Неизвестная ошибка");
+        ESP_LOGW(TAG, "⚠️ Wi-Fi пока нет, продолжаем запуск, переподключение в фоне");
     }
 }

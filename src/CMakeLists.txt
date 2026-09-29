@@ -9,5 +9,6 @@ idf_component_register(SRCS
     "wifi_handler.c"
     "arduino_ota.c"
     "mqtt_log.c"
+    "health.c"
     REQUIRES mqtt json
 )

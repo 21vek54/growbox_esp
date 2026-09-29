@@ -3,6 +3,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
+#include "esp_task_wdt.h"
 #include "variables.h"
 #include "i2c.h"
 #include "http.h"
@@ -11,6 +12,7 @@
 #include "adc_sensor.h"
 #include "arduino_ota.h"
 #include "mqtt_log.h"
+#include "health.h"
 
 // ============================================
 // Глобальные переменные
@@ -33,7 +35,11 @@ system_state_t state = {
 // ============================================
 void sensors_task(void *pvParameters)
 {
+    ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
+
     while (1) {
+        esp_task_wdt_reset();
+
         // 1. Датчик влажности почвы 1 (GPIO1)
         int moisture1 = adc_sensor_1_read_percent(NULL);
         if (moisture1 >= 0) {
@@ -73,6 +79,7 @@ void sensors_task(void *pvParameters)
 // ============================================
 void app_main(void)
 {
+    health_init();
     wifi_init_sta();
     mqtt_log_start();
     init_i2c();
@@ -91,7 +98,10 @@ void app_main(void)
     ESP_LOGI(TAG, "✅ Система запущена! API: http://%s/api/status", state.ip);
     ESP_LOGI(TAG, "📡 OTA (espota) UDP %d, пароль из OTA_PASS", OTA_PORT);
 
+    ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
     while (1) {
+        esp_task_wdt_reset();
+        health_check();
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }

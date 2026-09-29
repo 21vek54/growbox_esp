@@ -49,12 +49,24 @@ pio run -e ota -t upload
 mosquitto_sub -h 192.168.1.92 -u esp -P '...' -t "termo/home/rastishka/#" -v
 ```
 
-Сообщения с retain, примерно раз в 60 с; в JSON есть `samples` (число усреднённых опросов за минуту).
+Сообщения с retain, примерно раз в 60 с; в JSON есть `samples` (число усреднённых опросов за минуту), `reset_reason` (причина последнего старта) и `boot_count` (номер загрузки, хранится в NVS).
+
+### Сторожевой таймер и перезагрузки
+
+Wi‑Fi переподключается бесконечно, пауза между попытками растёт от 2 до 60 с. Плата перезагружается сама, если:
+
+| Событие | Порог | `reset_reason` |
+|---------|-------|----------------|
+| Задача опроса датчиков или главный цикл не отмечаются у Task WDT | 60 с | `task_wdt` |
+| Нет IP-адреса Wi‑Fi | 10 мин | `wifi_lost` |
+| Нет успешной отправки в MQTT | 15 мин | `no_publish` |
+
+Остальные значения `reset_reason`: `poweron` (питание), `sw` (OTA или `esp_restart`), `panic`, `int_wdt`, `brownout` (просадка питания), `ext`, `other`.
 
 ## Структура
 
 ```
-src/           — main, HTTP, Wi‑Fi, ArduinoOTA
+src/           — main, HTTP, Wi‑Fi, ArduinoOTA, MQTT, health (watchdog)
 lib/           — ADC, I2C, RS485, TCA9554
 docs/          — превью UI
 ```
