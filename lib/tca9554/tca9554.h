@@ -2,6 +2,8 @@
 #define TCA9554_H
 
 #include <stdint.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 #include "driver/i2c_master.h"
 
 // Регистры TCA9554
@@ -14,6 +16,7 @@
 typedef struct {
     i2c_master_dev_handle_t i2c_dev;
     uint8_t output_mask;      // Текущее состояние реле (бит 0 = реле 1)
+    SemaphoreHandle_t lock;   // Реле из разных модулей делят один регистр
 } tca9554_t;
 
 // Инициализация TCA9554

@@ -34,6 +34,10 @@ esp_err_t tca9554_init(tca9554_t *dev, i2c_master_bus_handle_t bus, uint8_t addr
     }
     
     dev->output_mask = 0x00;
+    dev->lock = xSemaphoreCreateMutex();
+    if (dev->lock == NULL) {
+        return ESP_ERR_NO_MEM;
+    }
     
     // Выключаем все реле
     err = tca9554_write_reg(dev, TCA9554_REG_OUTPUT, 0x00);
@@ -49,22 +53,29 @@ esp_err_t tca9554_init(tca9554_t *dev, i2c_master_bus_handle_t bus, uint8_t addr
 // Установить состояние всех реле
 esp_err_t tca9554_set_output(tca9554_t *dev, uint8_t mask)
 {
+    if (dev->lock == NULL) return ESP_ERR_INVALID_STATE;
+    xSemaphoreTake(dev->lock, portMAX_DELAY);
     dev->output_mask = mask;
-    return tca9554_write_reg(dev, TCA9554_REG_OUTPUT, mask);
+    esp_err_t err = tca9554_write_reg(dev, TCA9554_REG_OUTPUT, mask);
+    xSemaphoreGive(dev->lock);
+    return err;
 }
 
 // Включить/выключить одно реле (0-7)
 esp_err_t tca9554_set_relay(tca9554_t *dev, uint8_t relay_num, uint8_t state)
 {
     if (relay_num > 7) return ESP_ERR_INVALID_ARG;
+    if (dev->lock == NULL) return ESP_ERR_INVALID_STATE;
     
+    xSemaphoreTake(dev->lock, portMAX_DELAY);
     if (state) {
         dev->output_mask |= (1 << relay_num);
     } else {
         dev->output_mask &= ~(1 << relay_num);
     }
-    
-    return tca9554_write_reg(dev, TCA9554_REG_OUTPUT, dev->output_mask);
+    esp_err_t err = tca9554_write_reg(dev, TCA9554_REG_OUTPUT, dev->output_mask);
+    xSemaphoreGive(dev->lock);
+    return err;
 }
 
 // Получить текущее состояние реле

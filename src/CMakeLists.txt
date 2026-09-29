@@ -12,5 +12,7 @@ idf_component_register(SRCS
     "health.c"
     "time_sync.c"
     "light.c"
+    "soil.c"
+    "water.c"
     REQUIRES mqtt json
 )

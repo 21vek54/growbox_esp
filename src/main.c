@@ -14,6 +14,8 @@
 #include "mqtt_log.h"
 #include "health.h"
 #include "light.h"
+#include "soil.h"
+#include "water.h"
 #include "time_sync.h"
 
 // ============================================
@@ -42,21 +44,20 @@ void sensors_task(void *pvParameters)
     while (1) {
         esp_task_wdt_reset();
 
-        // 1. Датчик влажности почвы 1 (GPIO1)
-        int moisture1 = adc_sensor_1_read_percent(NULL);
-        if (moisture1 >= 0) {
-            state.moisture = moisture1;
-            ESP_LOGI("SENSORS", "💧 Датчик 1: %d%% (raw: %d)", 
-                     moisture1, adc_sensor_1_read_raw());
+        // 1–2. Датчики влажности почвы (GPIO1, GPIO2): медиана и проверка исправности
+        soil_sample();
+        soil_reading_t soil;
+        soil_get(&soil);
+        if (soil.percent[0] >= 0) {
+            state.moisture = soil.percent[0];
         }
-        
-        // 2. Датчик влажности почвы 2 (GPIO2)
-        int moisture2 = adc_sensor_2_read_percent(NULL);
-        if (moisture2 >= 0) {
-            state.moisture2 = moisture2;
-            ESP_LOGI("SENSORS", "💧 Датчик 2: %d%% (raw: %d)", 
-                     moisture2, adc_sensor_2_read_raw());
+        if (soil.percent[1] >= 0) {
+            state.moisture2 = soil.percent[1];
         }
+        ESP_LOGI("SENSORS", "💧 Почва %d%% (%s) | 1: %d%% raw %d %s | 2: %d%% raw %d %s",
+                 soil.value, soil.source,
+                 soil.percent[0], soil.raw[0], soil.ok[0] ? "ok" : (soil.fault[0] ? soil.fault[0] : "?"),
+                 soil.percent[1], soil.raw[1], soil.ok[1] ? "ok" : (soil.fault[1] ? soil.fault[1] : "?"));
         
         // 3. Температура и влажность воздуха (RS485)
         sensor_data_t sensor = rs485_read_sensor();
@@ -83,6 +84,8 @@ void app_main(void)
 {
     health_init();
     light_init();
+    soil_init();
+    water_init();
     wifi_init_sta();
     time_sync_start();
     mqtt_log_start();
@@ -109,6 +112,7 @@ void app_main(void)
         if (light_tick()) {
             mqtt_log_request_snapshot("light");
         }
+        water_tick();
         mqtt_log_service();
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
