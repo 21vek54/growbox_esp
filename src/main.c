@@ -13,6 +13,8 @@
 #include "arduino_ota.h"
 #include "mqtt_log.h"
 #include "health.h"
+#include "light.h"
+#include "time_sync.h"
 
 // ============================================
 // Глобальные переменные
@@ -80,7 +82,9 @@ void sensors_task(void *pvParameters)
 void app_main(void)
 {
     health_init();
+    light_init();
     wifi_init_sta();
+    time_sync_start();
     mqtt_log_start();
     init_i2c();
     rs485_init();
@@ -102,6 +106,10 @@ void app_main(void)
     while (1) {
         esp_task_wdt_reset();
         health_check();
+        if (light_tick()) {
+            mqtt_log_request_snapshot("light");
+        }
+        mqtt_log_service();
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }

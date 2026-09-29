@@ -10,5 +10,7 @@ idf_component_register(SRCS
     "arduino_ota.c"
     "mqtt_log.c"
     "health.c"
+    "time_sync.c"
+    "light.c"
     REQUIRES mqtt json
 )

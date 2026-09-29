@@ -13,8 +13,17 @@
 #include "variables.h"
 #include "secrets.h"
 #include "health.h"
+#include "light.h"
+#include "time_sync.h"
 
 static const char *MQTT_TAG = "MQTT_LOG";
+
+#ifndef MQTT_CMD_TOPIC
+#define MQTT_CMD_TOPIC "termo/home/rastishka/cmd"
+#endif
+#ifndef MQTT_SNAPSHOT_TOPIC
+#define MQTT_SNAPSHOT_TOPIC "termo/home/rastishka/snapshot"
+#endif
 
 #define PUBLISH_INTERVAL_US (60 * 1000000LL)
 
@@ -23,6 +32,16 @@ static SemaphoreHandle_t s_lock;
 static int64_t s_last_publish_us;
 static volatile bool s_connected;
 static volatile uint32_t s_last_publish_ok_s;
+
+// Снимок публикует главный цикл: из обработчика MQTT нельзя брать s_lock
+// (sensors_task держит его во время publish)
+static SemaphoreHandle_t s_reply_lock;
+static struct {
+    bool pending;
+    char reason[12];
+    char req_id[40];
+    char error[48];
+} s_reply;
 
 static uint32_t now_s(void)
 {
@@ -46,6 +65,32 @@ static void reset_accumulator(void)
     s_acc.count = 0;
 }
 
+static void add_common(cJSON *root)
+{
+    char now[32];
+    time_sync_format(now, sizeof(now));
+    state.uptime = (uint32_t)(esp_timer_get_time() / 1000000);
+
+    cJSON_AddNumberToObject(root, "uptime", state.uptime);
+    cJSON_AddStringToObject(root, "ip", state.ip);
+    cJSON_AddStringToObject(root, "version", VERSION);
+    cJSON_AddStringToObject(root, "reset_reason", health_reset_reason());
+    cJSON_AddNumberToObject(root, "boot_count", health_boot_count());
+    if (now[0] != '\0') {
+        cJSON_AddStringToObject(root, "time", now);
+    } else {
+        cJSON_AddNullToObject(root, "time");
+    }
+    cJSON_AddStringToObject(root, "time_status", time_sync_status());
+    light_add_json(root);
+
+    cJSON *relays = cJSON_CreateArray();
+    for (int i = 0; i < 8; i++) {
+        cJSON_AddItemToArray(relays, cJSON_CreateNumber(state.relays[i]));
+    }
+    cJSON_AddItemToObject(root, "relays", relays);
+}
+
 static char *build_payload(int samples)
 {
     cJSON *root = cJSON_CreateObject();
@@ -58,28 +103,76 @@ static char *build_payload(int samples)
     int avg_t = samples > 0 ? (int)(s_acc.sum_temperature / samples) : state.temperature;
     int avg_h = samples > 0 ? (int)(s_acc.sum_humidity / samples) : state.humidity;
 
-    state.uptime = (uint32_t)(esp_timer_get_time() / 1000000);
-
     cJSON_AddNumberToObject(root, "moisture", avg_m);
     cJSON_AddNumberToObject(root, "moisture2", avg_m2);
     cJSON_AddNumberToObject(root, "temperature", avg_t);
     cJSON_AddNumberToObject(root, "humidity", avg_h);
     cJSON_AddNumberToObject(root, "samples", samples);
-    cJSON_AddNumberToObject(root, "uptime", state.uptime);
-    cJSON_AddStringToObject(root, "ip", state.ip);
-    cJSON_AddStringToObject(root, "version", VERSION);
-    cJSON_AddStringToObject(root, "reset_reason", health_reset_reason());
-    cJSON_AddNumberToObject(root, "boot_count", health_boot_count());
-
-    cJSON *relays = cJSON_CreateArray();
-    for (int i = 0; i < 8; i++) {
-        cJSON_AddItemToArray(relays, cJSON_CreateNumber(state.relays[i]));
-    }
-    cJSON_AddItemToObject(root, "relays", relays);
+    add_common(root);
 
     char *json = cJSON_PrintUnformatted(root);
     cJSON_Delete(root);
     return json;
+}
+
+static char *build_snapshot(const char *reason, const char *req_id, const char *error)
+{
+    cJSON *root = cJSON_CreateObject();
+    if (root == NULL) {
+        return NULL;
+    }
+    cJSON_AddNumberToObject(root, "moisture", state.moisture);
+    cJSON_AddNumberToObject(root, "moisture2", state.moisture2);
+    cJSON_AddNumberToObject(root, "temperature", state.temperature);
+    cJSON_AddNumberToObject(root, "humidity", state.humidity);
+    add_common(root);
+    cJSON_AddStringToObject(root, "reason", reason);
+    if (req_id[0] != '\0') {
+        cJSON_AddStringToObject(root, "req_id", req_id);
+    }
+    cJSON_AddBoolToObject(root, "ok", error[0] == '\0');
+    if (error[0] != '\0') {
+        cJSON_AddStringToObject(root, "error", error);
+    }
+
+    char *json = cJSON_PrintUnformatted(root);
+    cJSON_Delete(root);
+    return json;
+}
+
+static void request_snapshot(const char *reason, const char *req_id, const char *error)
+{
+    if (s_reply_lock == NULL) {
+        return;
+    }
+    xSemaphoreTake(s_reply_lock, portMAX_DELAY);
+    // Не затирать ожидающий ответ на команду событием без req_id
+    if (!(s_reply.pending && s_reply.req_id[0] != '\0' && req_id[0] == '\0')) {
+        snprintf(s_reply.reason, sizeof(s_reply.reason), "%s", reason);
+        snprintf(s_reply.req_id, sizeof(s_reply.req_id), "%s", req_id);
+        snprintf(s_reply.error, sizeof(s_reply.error), "%s", error);
+    }
+    s_reply.pending = true;
+    xSemaphoreGive(s_reply_lock);
+}
+
+static void handle_cmd(const char *data, int len)
+{
+    cJSON *root = cJSON_ParseWithLength(data, len);
+    if (root == NULL) {
+        ESP_LOGW(MQTT_TAG, "Команда: не JSON");
+        return;
+    }
+    const cJSON *id = cJSON_GetObjectItem(root, "id");
+    const char *req_id = cJSON_IsString(id) ? id->valuestring : "";
+    const char *error = NULL;
+    const cJSON *light = cJSON_GetObjectItem(root, "light");
+    if (light != NULL) {
+        error = light_apply(light);
+    }
+    ESP_LOGI(MQTT_TAG, "Команда %s: %s", req_id, error ? error : "ok");
+    request_snapshot("cmd", req_id, error ? error : "");
+    cJSON_Delete(root);
 }
 
 static void try_publish(void)
@@ -113,12 +206,21 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
 {
     (void)handler_args;
     (void)base;
-    (void)event_data;
+    esp_mqtt_event_handle_t event = event_data;
 
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
         s_connected = true;
+        esp_mqtt_client_subscribe(s_client, MQTT_CMD_TOPIC, 1);
+        request_snapshot("connect", "", "");
         ESP_LOGI(MQTT_TAG, "Подключено к брокеру %s", MQTT_HOST);
+        break;
+    case MQTT_EVENT_DATA:
+        if (event->current_data_offset == 0 && event->data_len == event->total_data_len
+            && event->topic_len == (int)strlen(MQTT_CMD_TOPIC)
+            && strncmp(event->topic, MQTT_CMD_TOPIC, event->topic_len) == 0) {
+            handle_cmd(event->data, event->data_len);
+        }
         break;
     case MQTT_EVENT_DISCONNECTED:
         s_connected = false;
@@ -135,6 +237,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
 void mqtt_log_start(void)
 {
     s_lock = xSemaphoreCreateMutex();
+    s_reply_lock = xSemaphoreCreateMutex();
     reset_accumulator();
     s_last_publish_us = esp_timer_get_time();
     s_last_publish_ok_s = now_s();
@@ -158,6 +261,40 @@ void mqtt_log_start(void)
 uint32_t mqtt_log_since_publish_s(void)
 {
     return now_s() - s_last_publish_ok_s;
+}
+
+void mqtt_log_request_snapshot(const char *reason)
+{
+    request_snapshot(reason, "", "");
+}
+
+void mqtt_log_service(void)
+{
+    if (s_client == NULL || !s_connected || s_reply_lock == NULL) {
+        return;
+    }
+    char reason[sizeof(s_reply.reason)];
+    char req_id[sizeof(s_reply.req_id)];
+    char error[sizeof(s_reply.error)];
+
+    xSemaphoreTake(s_reply_lock, portMAX_DELAY);
+    if (!s_reply.pending) {
+        xSemaphoreGive(s_reply_lock);
+        return;
+    }
+    memcpy(reason, s_reply.reason, sizeof(reason));
+    memcpy(req_id, s_reply.req_id, sizeof(req_id));
+    memcpy(error, s_reply.error, sizeof(error));
+    s_reply.pending = false;
+    xSemaphoreGive(s_reply_lock);
+
+    char *payload = build_snapshot(reason, req_id, error);
+    if (payload == NULL) {
+        return;
+    }
+    esp_mqtt_client_publish(s_client, MQTT_SNAPSHOT_TOPIC, payload, 0, 1, 1);
+    ESP_LOGI(MQTT_TAG, "Снимок %s (%s)", MQTT_SNAPSHOT_TOPIC, reason);
+    free(payload);
 }
 
 void mqtt_log_feed_sample(int moisture, int moisture2, int temperature, int humidity)
