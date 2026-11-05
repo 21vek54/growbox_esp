@@ -26,24 +26,24 @@ esp_err_t tca9554_init(tca9554_t *dev, i2c_master_bus_handle_t bus, uint8_t addr
         return err;
     }
     
-    // Настройка всех пинов как выходы (0x00)
+    // Сначала уровни, потом направление: иначе при CONFIG=out вспыхнет NC-лампа.
+    // Реле 1 (бит 0) — катушка вкл (лампа на NC погашена) до light_tick.
+    dev->output_mask = (1u << 0);
+    err = tca9554_write_reg(dev, TCA9554_REG_OUTPUT, dev->output_mask);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set initial output");
+        return err;
+    }
+
     err = tca9554_write_reg(dev, TCA9554_REG_CONFIG, 0x00);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to configure TCA9554");
         return err;
     }
-    
-    dev->output_mask = 0x00;
+
     dev->lock = xSemaphoreCreateMutex();
     if (dev->lock == NULL) {
         return ESP_ERR_NO_MEM;
-    }
-    
-    // Выключаем все реле
-    err = tca9554_write_reg(dev, TCA9554_REG_OUTPUT, 0x00);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to set initial output");
-        return err;
     }
     
     ESP_LOGI(TAG, "TCA9554 initialized at address 0x%02X", addr);

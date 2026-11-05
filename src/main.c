@@ -99,7 +99,9 @@ void app_main(void)
     ESP_ERROR_CHECK(i2c_new_master_bus(&bus_config, &i2c_bus));
     ESP_ERROR_CHECK(tca9554_init(&tca9554, i2c_bus, TCA9554_ADDR));
     ESP_LOGI(TAG, "✅ TCA9554 инициализирован");
-    
+    // NC-лампа: катушка выкл = горит — сразу применить режим, не ждать секунду цикла
+    (void)light_tick();
+
     xTaskCreate(sensors_task, "sensors_task", 4096, NULL, 5, NULL);
     
     ESP_LOGI(TAG, "✅ Система запущена! API: http://%s/api/status", state.ip);

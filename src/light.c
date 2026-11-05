@@ -67,7 +67,8 @@ void light_init(void)
              MODE_NAMES[s_mode], s_on_min / 60, s_on_min % 60, s_duration_min);
 }
 
-static uint8_t wanted_state(void)
+// 1 — лампа должна гореть (логика расписания; не уровень катушки)
+static uint8_t wanted_lamp_on(void)
 {
     if (s_mode != LIGHT_MODE_AUTO) {
         return s_mode == LIGHT_MODE_ON;
@@ -94,13 +95,15 @@ bool light_tick(void)
     }
     bool changed = false;
     xSemaphoreTake(s_lock, portMAX_DELAY);
-    uint8_t want = wanted_state();
-    if (!s_applied || state.relays[LIGHT_RELAY] != want) {
-        if (tca9554_set_relay(&tca9554, LIGHT_RELAY, want) == ESP_OK) {
-            changed = s_applied && state.relays[LIGHT_RELAY] != want;
-            state.relays[LIGHT_RELAY] = want;
+    uint8_t lamp_on = wanted_lamp_on();
+    // Лампа на NC: катушка вкл → контакт разомкнут → лампа выкл
+    uint8_t coil = lamp_on ? 0 : 1;
+    if (!s_applied || state.relays[LIGHT_RELAY] != lamp_on) {
+        if (tca9554_set_relay(&tca9554, LIGHT_RELAY, coil) == ESP_OK) {
+            changed = s_applied && state.relays[LIGHT_RELAY] != lamp_on;
+            state.relays[LIGHT_RELAY] = lamp_on;
             s_applied = true;
-            ESP_LOGI(LIGHT_TAG, "Фитолампа %s (%s)", want ? "ВКЛ" : "ВЫКЛ", MODE_NAMES[s_mode]);
+            ESP_LOGI(LIGHT_TAG, "Фитолампа %s (%s)", lamp_on ? "ВКЛ" : "ВЫКЛ", MODE_NAMES[s_mode]);
         } else {
             ESP_LOGE(LIGHT_TAG, "Ошибка TCA9554, реле %d", LIGHT_RELAY + 1);
         }

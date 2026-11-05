@@ -4,13 +4,14 @@
 #include <stdbool.h>
 #include "cJSON.h"
 
-// Фитолампа на реле 1 (индекс 0 у TCA9554)
+// Фитолампа на реле 1 (индекс 0 у TCA9554), нагрузка на NC-контакте
 #define LIGHT_RELAY 0
 
 // Загрузить расписание из NVS (после health_init, до mqtt_log_start)
 void light_init(void);
 
-// Раз в секунду, после tca9554_init: привести реле к расписанию.
+// Раз в секунду (и сразу после tca9554_init): лампа по расписанию.
+// state.relays[LIGHT_RELAY] и JSON light — логика лампы (1=горит), не катушка.
 // true — лампа переключилась
 bool light_tick(void);
 
